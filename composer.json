@@ -1,0 +1,22 @@
+{
+    "name": "iliich246/yii2-yicms-pages",
+    "description": "Pages module of the yicms",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension"],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "iliich246",
+            "email": "iliich246@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*",
+        "iliich246/yii2-yicms-common": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "iliich246\\yicms_common\\": ""
+        }
+    }
+}

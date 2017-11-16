@@ -1,1 +1,1 @@
-Pages module of the yicms
+Pages module of the yicms.

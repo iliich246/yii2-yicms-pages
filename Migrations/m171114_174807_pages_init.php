@@ -22,14 +22,14 @@ class m171114_174807_pages_init extends Migration
             'visible' => $this->boolean(),
             'system_route' => $this->string(),
             'ruled_route' => $this->string(),
-            'field_template_reference' => $this->integer(),
-            'field_reference' => $this->integer(),
-            'file_template_reference' => $this->integer(),
-            'file_reference' => $this->integer(),
-            'image_template_reference' => $this->integer(),
-            'image_reference' => $this->integer(),
-            'condition_template_reference' => $this->integer(),
-            'condition_reference' => $this->integer(),
+            'field_template_reference' => $this->string(),
+            'field_reference' => $this->string(),
+            'file_template_reference' => $this->string(),
+            'file_reference' => $this->string(),
+            'image_template_reference' => $this->string(),
+            'image_reference' => $this->string(),
+            'condition_template_reference' => $this->string(),
+            'condition_reference' => $this->string(),
         ]);
 
         /**

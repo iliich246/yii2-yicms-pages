@@ -11,6 +11,11 @@ use Iliich246\YicmsCommon\Base\AbstractConfigurableModule;
  */
 class PagesModule extends AbstractConfigurableModule
 {
+    /** @inheritdoc */
+    public $controllerMap = [
+        'dev' => 'Iliich246\YicmsPages\Controllers\DeveloperController'
+    ];
+
     /**
      * @inherited
      */

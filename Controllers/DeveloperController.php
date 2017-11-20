@@ -2,14 +2,15 @@
 
 namespace Iliich246\YicmsPages\Controllers;
 
-
 use Yii;
+use yii\base\Model;
 use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use Iliich246\YicmsPages\Base\Pages;
 use Iliich246\YicmsPages\Base\PagesException;
-
+use Iliich246\YicmsCommon\Languages\Language;
+use Iliich246\YicmsPages\Base\PageTranslate;
 
 /**
  * Class DeveloperController
@@ -102,4 +103,47 @@ class DeveloperController extends Controller
             'model' => $model,
         ]);
     }
+
+    /**
+     * Display page for work with admin translations of page
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionPageTranslates($id)
+    {
+        /** @var Pages $page */
+        $page = Pages::findOne($id);
+
+        if (!$page) throw new NotFoundHttpException('Wrong page id');
+
+        $languages = Language::getInstance()->usedLanguages();
+
+        $translateModels = [];
+
+        foreach($languages as $key => $language) {
+            $pageTranslate = new PageTranslate();
+            $pageTranslate->setLanguage($language);
+            $pageTranslate->setPage($page);
+            $pageTranslate->setController($this);
+
+            $translateModels[$key] = $pageTranslate;
+        }
+
+        if (Model::loadMultiple($translateModels, Yii::$app->request->post()) &&
+            Model::validateMultiple($translateModels)) {
+
+            /** @var PageTranslate $translateModel */
+            foreach($translateModels as $key=>$translateModel) {
+                //$translateModel->update();
+            }
+        }
+
+        return $this->render('/developer/page-translates', [
+            'page' => $page,
+            'translateModels' => $translateModels,
+        ]);
+    }
+
+
 }

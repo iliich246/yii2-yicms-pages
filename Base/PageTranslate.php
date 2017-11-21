@@ -21,12 +21,23 @@ class PageTranslate extends AbstractTranslate
 {
     /** @var Pages page associated with this model */
     private $page;
+    /** @inheritdoc */
+    protected static $viewName;
+
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
         return '{{%pages_names_translates}}';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function getViewName()
+    {
+        return '@yicms-pages/Views/translates/page_name_translate';
     }
 
     /**
@@ -59,5 +70,4 @@ class PageTranslate extends AbstractTranslate
     {
         $this->page = $page;
     }
-
 }

@@ -144,6 +144,4 @@ class DeveloperController extends Controller
             'translateModels' => $translateModels,
         ]);
     }
-
-
 }

@@ -3,8 +3,11 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ActiveForm;
+use yii\widgets\Pjax;
 use Iliich246\YicmsPages\Base\Pages;
 use Iliich246\YicmsPages\Base\PageTranslate;
+use Iliich246\YicmsCommon\Widgets\SimpleTabsTranslatesWidget;
+
 //use app\modules\common\widgets\TabsTranslatesWidget;
 
 /* @var $this \yii\web\View */
@@ -36,21 +39,17 @@ $this->title = "Translations of page names"
                 <h3>Pages names form</h3>
                 <h4>Here are edited names of pages that admin see in the admin panel</h4>
             </div>
-
+<!--            --><?php //$pjax = Pjax::begin() ?>
             <?php $form = ActiveForm::begin([
                 'id' => 'edit-page-names-form',
             ]);
             ?>
 
-            <?php /* ?>
-            <?= TabsTranslatesWidget::widget([
+            <?= SimpleTabsTranslatesWidget::widget([
                 'form' => $form,
-                'templateName' => '_pageNamesTranslateBlock',
                 'translateModels' => $translateModels,
             ])
             ?>
-
-            */ ?>
 
             <div class="row control-buttons">
                 <div class="col-xs-12">
@@ -60,6 +59,7 @@ $this->title = "Translations of page names"
             </div>
 
             <?php ActiveForm::end(); ?>
+<!--            --><?php //Pjax::end() ?>
         </div>
     </div>
 </div>

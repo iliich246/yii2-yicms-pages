@@ -10,7 +10,7 @@ use yii\web\NotFoundHttpException;
 use Iliich246\YicmsPages\Base\Pages;
 use Iliich246\YicmsPages\Base\PagesException;
 use Iliich246\YicmsCommon\Languages\Language;
-use Iliich246\YicmsPages\Base\PageTranslate;
+use Iliich246\YicmsPages\Base\PageDevTranslatesForm;
 
 /**
  * Class DeveloperController
@@ -70,7 +70,7 @@ class DeveloperController extends Controller
             }
         }
 
-        return $this->render('/developer/create-update', [
+        return $this->render('/developer/create_update', [
             'model' => $model,
         ]);
     }
@@ -99,7 +99,7 @@ class DeveloperController extends Controller
 //            }
 //        }
 
-        return $this->render('/developer/create-update', [
+        return $this->render('/developer/create_update', [
             'model' => $model,
         ]);
     }
@@ -122,10 +122,10 @@ class DeveloperController extends Controller
         $translateModels = [];
 
         foreach($languages as $key => $language) {
-            $pageTranslate = new PageTranslate();
+            $pageTranslate = new PageDevTranslatesForm();
             $pageTranslate->setLanguage($language);
             $pageTranslate->setPage($page);
-            $pageTranslate->setController($this);
+            $pageTranslate->loadFromDb();
 
             $translateModels[$key] = $pageTranslate;
         }
@@ -133,13 +133,13 @@ class DeveloperController extends Controller
         if (Model::loadMultiple($translateModels, Yii::$app->request->post()) &&
             Model::validateMultiple($translateModels)) {
 
-            /** @var PageTranslate $translateModel */
+            /** @var PageDevTranslatesForm $translateModel */
             foreach($translateModels as $key=>$translateModel) {
-                //$translateModel->update();
+                $translateModel->save();
             }
         }
 
-        return $this->render('/developer/page-translates', [
+        return $this->render('/developer/page_translates', [
             'page' => $page,
             'translateModels' => $translateModels,
         ]);

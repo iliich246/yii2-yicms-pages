@@ -1,7 +1,7 @@
 <?php
 
 /* @var $this \yii\web\View */
-/* @var $translateModel \Iliich246\YicmsPages\Base\PageTranslate */
+/* @var $translateModel \Iliich246\YicmsPages\Base\PageDevTranslatesForm */
 
 ?>
 

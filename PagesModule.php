@@ -3,13 +3,14 @@
 namespace Iliich246\YicmsPages;
 
 use Iliich246\YicmsCommon\Base\AbstractConfigurableModule;
+use Iliich246\YicmsCommon\Base\YicmsModuleInterface;
 
 /**
  * Class PagesModule
  *
  * @author iliich246 <iliich246@gmail.com>
  */
-class PagesModule extends AbstractConfigurableModule
+class PagesModule extends AbstractConfigurableModule implements YicmsModuleInterface
 {
     /** @inheritdoc */
     public $controllerMap = [
@@ -27,7 +28,7 @@ class PagesModule extends AbstractConfigurableModule
     /**
      * @inherited
      */
-    public function getModuleName()
+    public static function getModuleName()
     {
         return 'Pages';
     }

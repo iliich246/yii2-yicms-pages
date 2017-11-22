@@ -91,13 +91,13 @@ class DeveloperController extends Controller
 
         $model->scenario = Pages::SCENARIO_UPDATE;
 
-//        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-//            if ($model->save()) {
-//                //return $this->redirect(Url::toRoute(['update', 'id' => $model->id]));
-//            } else {
-//                //TODO: add bootbox error
-//            }
-//        }
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            if ($model->save()) {
+                //return $this->redirect(Url::toRoute(['update', 'id' => $model->id]));
+            } else {
+                //TODO: add bootbox error
+            }
+        }
 
         return $this->render('/developer/create_update', [
             'model' => $model,

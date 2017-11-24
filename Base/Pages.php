@@ -3,7 +3,10 @@
 namespace Iliich246\YicmsPages\Base;
 
 use yii\db\ActiveRecord;
+use Iliich246\YicmsCommon\Fields\FieldsHandler;
 use Iliich246\YicmsCommon\Fields\FieldTemplate;
+use Iliich246\YicmsCommon\Fields\FieldsInterface;
+use Iliich246\YicmsCommon\Fields\FieldReferenceInterface;
 
 
 /**
@@ -26,16 +29,24 @@ use Iliich246\YicmsCommon\Fields\FieldTemplate;
  *
  * @author iliich246 <iliich246@gmail.com>
  */
-class Pages extends ActiveRecord
+class Pages extends ActiveRecord implements
+    FieldsInterface,
+    FieldReferenceInterface
 {
     const SCENARIO_CREATE = 0;
     const SCENARIO_UPDATE = 1;
+
+    /** @var FieldsHandler instance of field handler object */
+    private $fieldHandler;
 
     /**
      * @var boolean if true standard field as title and seo field will be created
      */
     public $standardFields = true;
 
+    /**
+     * @param array $config
+     */
     public function __construct($config = [])
     {
         parent::__construct($config);
@@ -99,8 +110,42 @@ class Pages extends ActiveRecord
     public function afterValidate()
     {
         if ($this->hasErrors()) return;
-
         $this->field_template_reference = FieldTemplate::getTemplateReference();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getFieldHandler()
+    {
+        if (!$this->fieldHandler)
+            $this->fieldHandler = new FieldsHandler($this);
+
+        return $this->fieldHandler;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getField($name)
+    {
+        return $this->getFieldHandler()->getField($name);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getTemplateFieldReference()
+    {
+        return $this->field_template_reference;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getFieldReference()
+    {
+        return $this->field_reference;
     }
 
     /**

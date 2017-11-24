@@ -5,15 +5,17 @@ use yii\helpers\Url;
 use yii\widgets\Pjax;
 use yii\bootstrap\ActiveForm;
 use Iliich246\YicmsPages\Base\Pages;
+use Iliich246\YicmsCommon\Widgets\FieldsDevInputWidget;
 
 /* @var $this \yii\web\View */
-/* @var $model \Iliich246\YicmsPages\Base\Pages */
+/* @var $page \Iliich246\YicmsPages\Base\Pages */
+/* @var $devFieldGroup \Iliich246\YicmsCommon\Fields\DevFieldsGroup */
 
 ?>
 
 <div class="col-sm-9 content">
     <div class="row content-block content-header">
-        <?php if ($model->scenario == Pages::SCENARIO_CREATE): ?>
+        <?php if ($page->scenario == Pages::SCENARIO_CREATE): ?>
             <h1>Create Page</h1>
         <?php else: ?>
             <h1>Update Page</h1>
@@ -23,26 +25,26 @@ use Iliich246\YicmsPages\Base\Pages;
 
     <div class="row content-block breadcrumbs">
         <a href="<?= Url::toRoute(['list']) ?>"><span>Pages list</span></a> <span> / </span>
-        <?php if ($model->scenario == Pages::SCENARIO_CREATE): ?>
-            <span>create page</span>
+        <?php if ($page->scenario == Pages::SCENARIO_CREATE): ?>
+            <span>Create page</span>
         <?php else: ?>
-            <span>update page</span>
+            <span>Update page</span>
         <?php endif; ?>
     </div>
 
     <div class="row content-block form-block">
         <div class="col-xs-12">
             <div class="content-block-title">
-                <?php if ($model->scenario == Pages::SCENARIO_CREATE): ?>
+                <?php if ($page->scenario == Pages::SCENARIO_CREATE): ?>
                     <h3>Create page essence</h3>
                 <?php else: ?>
                     <h3>Update page essence</h3>
                 <?php endif; ?>
             </div>
-            <?php if ($model->scenario == Pages::SCENARIO_UPDATE): ?>
+            <?php if ($page->scenario == Pages::SCENARIO_UPDATE): ?>
                 <div class="row control-buttons">
                     <div class="col-xs-12">
-                        <a href="<?= Url::toRoute(['page-translates', 'id' => $model->id]) ?>"
+                        <a href="<?= Url::toRoute(['page-translates', 'id' => $page->id]) ?>"
                            class="btn btn-primary">
                             Page name translates
                         </a>
@@ -61,33 +63,33 @@ use Iliich246\YicmsPages\Base\Pages;
 
             <div class="row">
                 <div class="col-xs-12">
-                    <?= $form->field($model, 'program_name') ?>
+                    <?= $form->field($page, 'program_name') ?>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-xs-12">
-                    <?= $form->field($model, 'system_route') ?>
+                    <?= $form->field($page, 'system_route') ?>
                 </div>
             </div>
 
-            <?php if ($model->scenario == Pages::SCENARIO_CREATE): ?>
+            <?php if ($page->scenario == Pages::SCENARIO_CREATE): ?>
                 <div class="row">
                     <div class="col-xs-12">
-                        <?= $form->field($model, 'standardFields')->checkbox() ?>
+                        <?= $form->field($page, 'standardFields')->checkbox() ?>
                     </div>
                 </div>
             <?php endif; ?>
 
             <div class="row">
                 <div class="col-xs-12">
-                    <?= $form->field($model, 'editable')->checkbox() ?>
+                    <?= $form->field($page, 'editable')->checkbox() ?>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-xs-12">
-                    <?= $form->field($model, 'visible')->checkbox() ?>
+                    <?= $form->field($page, 'visible')->checkbox() ?>
                 </div>
             </div>
 
@@ -101,6 +103,26 @@ use Iliich246\YicmsPages\Base\Pages;
             <?php Pjax::end() ?>
         </div>
     </div>
+
+    <?php if ($page->scenario == Pages::SCENARIO_CREATE): return; endif;?>
+
+    <div class="row content-block form-block">
+        <div class="col-xs-12">
+            <div class="content-block-title">
+                <h3>List of page fields</h3>
+            </div>
+            <div class="row control-buttons">
+                <div class="col-xs-12">
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                        <span class="glyphicon glyphicon-plus-sign"></span> Add new field
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?= FieldsDevInputWidget::widget() ?>
+
 <?php /* ?>
     <?php if ($pagesModel->scenario !== PagesModel::SCENARIO_CREATE): ?>
 

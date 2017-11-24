@@ -2,6 +2,7 @@
 
 namespace Iliich246\YicmsPages\Controllers;
 
+use Iliich246\YicmsCommon\Fields\DevFieldsGroup;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
@@ -58,20 +59,20 @@ class DeveloperController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Pages();
-        $model->scenario = Pages::SCENARIO_CREATE;
+        $page = new Pages();
+        $page->scenario = Pages::SCENARIO_CREATE;
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+        if ($page->load(Yii::$app->request->post()) && $page->validate()) {
 
-            if ($model->save()) {
-                return $this->redirect(Url::toRoute(['update', 'id' => $model->id]));
+            if ($page->save()) {
+                return $this->redirect(Url::toRoute(['update', 'id' => $page->id]));
             } else {
                 //TODO: add bootbox error
             }
         }
 
         return $this->render('/developer/create_update', [
-            'model' => $model,
+            'page' => $page,
         ]);
     }
 
@@ -83,24 +84,37 @@ class DeveloperController extends Controller
      */
     public function actionUpdate($id)
     {
-        /** @var Pages $model */
-        $model = Pages::findOne($id);
+        /** @var Pages $page */
+        $page = Pages::findOne($id);
 
-        if (!$model)
+        if (!$page)
             throw new NotFoundHttpException('Wrong page ID');
 
-        $model->scenario = Pages::SCENARIO_UPDATE;
+        $page->scenario = Pages::SCENARIO_UPDATE;
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->save()) {
+        if ($page->load(Yii::$app->request->post()) && $page->validate()) {
+            if ($page->save()) {
                 //return $this->redirect(Url::toRoute(['update', 'id' => $model->id]));
             } else {
                 //TODO: add bootbox error
             }
         }
 
+        $devFieldGroup = new DevFieldsGroup();
+        $devFieldGroup->setFieldsReferenceAble($page);
+        $devFieldGroup->initialize();
+
+        if ($devFieldGroup->load(Yii::$app->request->post()) && $devFieldGroup->validate()) {
+
+        }
+
+
+
+
+
         return $this->render('/developer/create_update', [
-            'model' => $model,
+            'page' => $page,
+            'devFieldGroup' => $devFieldGroup
         ]);
     }
 

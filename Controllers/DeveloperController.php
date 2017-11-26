@@ -3,6 +3,7 @@
 namespace Iliich246\YicmsPages\Controllers;
 
 use Iliich246\YicmsCommon\Fields\DevFieldsGroup;
+use Iliich246\YicmsCommon\Fields\FieldTemplate;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
@@ -108,13 +109,16 @@ class DeveloperController extends Controller
 
         }
 
+        $fieldTemplates = FieldTemplate::getList($page->field_template_reference);
+
 
 
 
 
         return $this->render('/developer/create_update', [
             'page' => $page,
-            'devFieldGroup' => $devFieldGroup
+            'devFieldGroup' => $devFieldGroup,
+            'fieldTemplates' => $fieldTemplates,
         ]);
     }
 

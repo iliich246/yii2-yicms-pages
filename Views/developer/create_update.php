@@ -6,10 +6,21 @@ use yii\widgets\Pjax;
 use yii\bootstrap\ActiveForm;
 use Iliich246\YicmsPages\Base\Pages;
 use Iliich246\YicmsCommon\Widgets\FieldsDevInputWidget;
+use Iliich246\YicmsCommon\Fields\FieldTemplate;
 
 /* @var $this \yii\web\View */
 /* @var $page \Iliich246\YicmsPages\Base\Pages */
 /* @var $devFieldGroup \Iliich246\YicmsCommon\Fields\DevFieldsGroup */
+/* @var $fieldTemplates FieldTemplate[] */
+
+
+$js = <<<EOT
+    $('.field-item').on('click', function() {
+        alert(1);
+    });
+EOT;
+
+$this->registerJs($js);
 
 ?>
 
@@ -118,11 +129,27 @@ use Iliich246\YicmsCommon\Widgets\FieldsDevInputWidget;
                     </button>
                 </div>
             </div>
+            <div class="list-block">
+                <?php foreach ($fieldTemplates as $fieldTemplate): ?>
+                    <div class="row list-items field-item">
+                        <div class="col-xs-10 list-title">
+                            <p data-field-template="<?= $fieldTemplate->field_template_reference ?>">
+                                <?= $fieldTemplate->program_name ?> (<?= $fieldTemplate->getTypeName() ?>)
+                            </p>
+                        </div>
+                        <div class="col-xs-2 list-controls">
+
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
     </div>
 
-    <?= FieldsDevInputWidget::widget() ?>
-
+    <?= FieldsDevInputWidget::widget([
+        'devFieldGroup' => $devFieldGroup
+    ])
+    ?>
 <?php /* ?>
     <?php if ($pagesModel->scenario !== PagesModel::SCENARIO_CREATE): ?>
 

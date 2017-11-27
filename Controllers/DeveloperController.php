@@ -6,6 +6,7 @@ use Iliich246\YicmsCommon\Fields\DevFieldsGroup;
 use Iliich246\YicmsCommon\Fields\FieldTemplate;
 use Iliich246\YicmsCommon\Widgets\FieldsDevInputWidget;
 use Yii;
+use yii\base\Exception;
 use yii\base\Model;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -106,30 +107,23 @@ class DeveloperController extends Controller
         $devFieldGroup->setFieldsReferenceAble($page);
         $devFieldGroup->initialize($fieldTemplateId);
 
-//        if (Yii::$app->request->isAjax) {
-//
-//
-//            //return FieldsDevInputWidget::w;
-//        }
-
         if ($devFieldGroup->load(Yii::$app->request->post()) && $devFieldGroup->validate()) {
 
-
-            //throw new \yii\base\Exception(print_r($devFieldGroup->fieldNameTranslates, true));
-            //throw new \yii\base\Exception(print_r(Yii::$app->request->post(), true));
-            //$devFieldGroup->save();
-
+            if (!$devFieldGroup->save()) {
+                //TODO: bootbox error
+            }
 
             return $this->render('/developer/create_update', [
                 'page' => $page,
                 'devFieldGroup' => $devFieldGroup,
             ]);
         }
+        //throw new Exception(print_r(Yii::$app->request->post(),1));
+        //throw new Exception(print_r(Yii::$app->request->post(),1));
 
-        if (Yii::$app->request->isPjax) {
-
-            //return 'PJAX';
-
+        if (Yii::$app->request->isPjax &&
+            Yii::$app->request->post('_pjax') == '#'.FieldsDevInputWidget::getPjaxContainerId())
+        {
             return $this->render('/developer/create_update', [
                 'page' => $page,
                 'devFieldGroup' => $devFieldGroup,
@@ -137,10 +131,6 @@ class DeveloperController extends Controller
         }
 
         $fieldTemplates = FieldTemplate::getList($page->field_template_reference);
-
-
-
-
 
         return $this->render('/developer/create_update', [
             'page' => $page,

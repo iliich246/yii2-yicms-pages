@@ -13,20 +13,23 @@ use Iliich246\YicmsCommon\Fields\FieldTemplate;
 /* @var $devFieldGroup \Iliich246\YicmsCommon\Fields\DevFieldsGroup */
 /* @var $fieldTemplates FieldTemplate[] */
 
+$bundle = \Iliich246\YicmsCommon\Assets\DeveloperAsset::register($this);
+
 $modalName = FieldsDevInputWidget::getModalWindowName();
 $formName  = FieldsDevInputWidget::getFormName();
+$pjaxName  = FieldsDevInputWidget::getPjaxContainerId();
 $url = Url::toRoute([
     'update', 'id' => $page->id
 ]);
-
+$src = $bundle->baseUrl . '/loader.svg';
 $js = <<<EOT
 
+$('#{$pjaxName}').on('pjax:send', function() {
+  $('#{$modalName}').find('.modal-content').empty().append('<img src="{$src}" style="text-align:center">');
+  console.log('penis');
+});
 
-    $('.field-item').on('click', function(event) {
-
-    //var container = $(this).closest('[data-pjax-container]')
-    //var containerSelector = '#' + container.id
-    //$.pjax.click(event, {container: '#test-pjax'})
+$('.field-item').on('click', function(event) {
 
     console.log($(this).find('p').data('field-template-id'));
 
@@ -35,13 +38,15 @@ $js = <<<EOT
     $.pjax.defaults.timeout = 20000;
     $.pjax({
         url: '{$url}&fieldTemplateId=' + templateData,
-        container: '#test-pjax',
+        container: '#{$pjaxName}',
         scrollTo: false,
+        push: false,
+        type: "POST",
+        timeout: 2500
     });
 
     $('#{$modalName}').modal('show');
-
-    });
+});
 EOT;
 
 $this->registerJs($js, $this::POS_READY);

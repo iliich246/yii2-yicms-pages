@@ -13,14 +13,38 @@ use Iliich246\YicmsCommon\Fields\FieldTemplate;
 /* @var $devFieldGroup \Iliich246\YicmsCommon\Fields\DevFieldsGroup */
 /* @var $fieldTemplates FieldTemplate[] */
 
+$modalName = FieldsDevInputWidget::getModalWindowName();
+$formName  = FieldsDevInputWidget::getFormName();
+$url = Url::toRoute([
+    'update', 'id' => $page->id
+]);
 
 $js = <<<EOT
-    $('.field-item').on('click', function() {
-        alert(1);
+
+
+    $('.field-item').on('click', function(event) {
+
+    //var container = $(this).closest('[data-pjax-container]')
+    //var containerSelector = '#' + container.id
+    //$.pjax.click(event, {container: '#test-pjax'})
+
+    console.log($(this).find('p').data('field-template-id'));
+
+    var templateData = $(this).find('p').data('field-template-id');
+
+    $.pjax.defaults.timeout = 20000;
+    $.pjax({
+        url: '{$url}&fieldTemplateId=' + templateData,
+        container: '#test-pjax',
+        scrollTo: false,
+    });
+
+    $('#{$modalName}').modal('show');
+
     });
 EOT;
 
-$this->registerJs($js);
+$this->registerJs($js, $this::POS_READY);
 
 ?>
 
@@ -55,6 +79,7 @@ $this->registerJs($js);
             <?php if ($page->scenario == Pages::SCENARIO_UPDATE): ?>
                 <div class="row control-buttons">
                     <div class="col-xs-12">
+
                         <a href="<?= Url::toRoute(['page-translates', 'id' => $page->id]) ?>"
                            class="btn btn-primary">
                             Page name translates
@@ -124,16 +149,19 @@ $this->registerJs($js);
             </div>
             <div class="row control-buttons">
                 <div class="col-xs-12">
-                    <button class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#fieldsDevModal">
                         <span class="glyphicon glyphicon-plus-sign"></span> Add new field
                     </button>
                 </div>
             </div>
+            <?php if (isset($fieldTemplates)): ?>
             <div class="list-block">
                 <?php foreach ($fieldTemplates as $fieldTemplate): ?>
                     <div class="row list-items field-item">
                         <div class="col-xs-10 list-title">
-                            <p data-field-template="<?= $fieldTemplate->field_template_reference ?>">
+                            <p data-field-template="<?= $fieldTemplate->field_template_reference ?>"
+                               data-field-template-id="<?= $fieldTemplate->id ?>"
+                            >
                                 <?= $fieldTemplate->program_name ?> (<?= $fieldTemplate->getTypeName() ?>)
                             </p>
                         </div>
@@ -143,6 +171,7 @@ $this->registerJs($js);
                     </div>
                 <?php endforeach; ?>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -150,106 +179,3 @@ $this->registerJs($js);
         'devFieldGroup' => $devFieldGroup
     ])
     ?>
-<?php /* ?>
-    <?php if ($pagesModel->scenario !== PagesModel::SCENARIO_CREATE): ?>
-
-        <?= $this->render('createUpdateField', [
-            'fieldsModel' => $fieldsModel
-        ]) ?>
-
-        <?php if ($fields): ?>
-            <div class="row content-block form-block">
-                <div class="col-xs-12">
-                    <div class="content-block-title">
-                        <h3>List of page fields</h3>
-                    </div>
-                    <div class="list-block">
-                        <?php foreach ($fields as $field): ?>
-                            <div class="row list-items">
-                                <div class="col-xs-10 list-title">
-                                    <a href="<?= Url::toRoute(['update-field', 'id' => $field->id]) ?>">
-                                        <p>
-                                            <?= $field->program_name ?> (<?= $field->getTypeName() ?>)
-                                        </p>
-                                    </a>
-                                </div>
-                                <div class="col-xs-2 list-controls">
-
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
-    <?php endif; ?>
-
-    <?php if ($pagesModel->scenario !== PagesModel::SCENARIO_CREATE): ?>
-
-        <?= $this->render('createUpdateFileBlock', [
-            'fileBlockModel' => $fileBlockModel,
-        ]) ?>
-
-        <?php if ($filesBlocks): ?>
-            <div class="row content-block form-block">
-                <div class="col-xs-12">
-                    <div class="content-block-title">
-                        <h3>List of file blocks</h3>
-                    </div>
-                    <div class="list-block">
-                        <?php foreach ($filesBlocks as $fileBlock): ?>
-                            <div class="row list-items">
-                                <div class="col-xs-10 list-title">
-                                    <a href="<?= Url::toRoute(['update-file-block', 'id' => $fileBlock->id]) ?>">
-                                        <p>
-                                            <?= $fileBlock->program_name ?> (<?= $fileBlock->getTypeName() ?>)
-                                        </p>
-                                    </a>
-                                </div>
-                                <div class="col-xs-2 list-controls">
-
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
-
-    <?php endif; ?>
-
-    <?php if ($pagesModel->scenario !== PagesModel::SCENARIO_CREATE): ?>
-
-        <?= $this->render('createUpdateGalleryBlock', [
-            'galleryBlockModel' => $galleryBlockModel,
-        ]) ?>
-
-        <?php if ($galleryBlocks): ?>
-            <div class="row content-block form-block">
-                <div class="col-xs-12">
-                    <div class="content-block-title">
-                        <h3>List of file blocks</h3>
-                    </div>
-                    <div class="list-block">
-                        <?php foreach ($galleryBlocks as $galleryBlock): ?>
-                            <div class="row list-items">
-                                <div class="col-xs-10 list-title">
-                                    <a href="<?= Url::toRoute(['update-gallery-block', 'id' => $galleryBlock->id]) ?>">
-                                        <p>
-                                            <?= $galleryBlock->program_name ?> (<?= $galleryBlock->getTypeName() ?>)
-                                        </p>
-                                    </a>
-                                </div>
-                                <div class="col-xs-2 list-controls">
-
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
-
-    <?php endif; ?>
-</div>
-*/ ?>

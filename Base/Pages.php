@@ -110,7 +110,7 @@ class Pages extends ActiveRecord implements
     public function afterValidate()
     {
         if ($this->hasErrors()) return;
-        $this->field_template_reference = FieldTemplate::getTemplateReference();
+        $this->field_template_reference = FieldTemplate::generateTemplateReference();
     }
 
     /**

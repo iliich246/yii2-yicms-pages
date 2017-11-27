@@ -4,6 +4,7 @@ namespace Iliich246\YicmsPages\Controllers;
 
 use Iliich246\YicmsCommon\Fields\DevFieldsGroup;
 use Iliich246\YicmsCommon\Fields\FieldTemplate;
+use Iliich246\YicmsCommon\Widgets\FieldsDevInputWidget;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
@@ -78,12 +79,12 @@ class DeveloperController extends Controller
     }
 
     /**
-     * Updates page essence
      * @param $id
+     * @param null|string $fieldTemplateId
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id, $fieldTemplateId = null)
     {
         /** @var Pages $page */
         $page = Pages::findOne($id);
@@ -103,10 +104,36 @@ class DeveloperController extends Controller
 
         $devFieldGroup = new DevFieldsGroup();
         $devFieldGroup->setFieldsReferenceAble($page);
-        $devFieldGroup->initialize();
+        $devFieldGroup->initialize($fieldTemplateId);
+
+//        if (Yii::$app->request->isAjax) {
+//
+//
+//            //return FieldsDevInputWidget::w;
+//        }
 
         if ($devFieldGroup->load(Yii::$app->request->post()) && $devFieldGroup->validate()) {
 
+
+            //throw new \yii\base\Exception(print_r($devFieldGroup->fieldNameTranslates, true));
+            //throw new \yii\base\Exception(print_r(Yii::$app->request->post(), true));
+            //$devFieldGroup->save();
+
+
+            return $this->render('/developer/create_update', [
+                'page' => $page,
+                'devFieldGroup' => $devFieldGroup,
+            ]);
+        }
+
+        if (Yii::$app->request->isPjax) {
+
+            //return 'PJAX';
+
+            return $this->render('/developer/create_update', [
+                'page' => $page,
+                'devFieldGroup' => $devFieldGroup,
+            ]);
         }
 
         $fieldTemplates = FieldTemplate::getList($page->field_template_reference);
@@ -120,6 +147,15 @@ class DeveloperController extends Controller
             'devFieldGroup' => $devFieldGroup,
             'fieldTemplates' => $fieldTemplates,
         ]);
+    }
+
+    public function actionFieldAjax($id, $fieldTemplate = null)
+    {
+        /** @var Pages $page */
+        $page = Pages::findOne($id);
+
+        if (!$page)
+            throw new NotFoundHttpException('Wrong page ID');
     }
 
     /**

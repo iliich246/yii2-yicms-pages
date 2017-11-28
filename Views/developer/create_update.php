@@ -12,6 +12,7 @@ use Iliich246\YicmsCommon\Fields\FieldTemplate;
 /* @var $page \Iliich246\YicmsPages\Base\Pages */
 /* @var $devFieldGroup \Iliich246\YicmsCommon\Fields\DevFieldsGroup */
 /* @var $fieldTemplates FieldTemplate[] */
+/* @var $success bool */
 
 $bundle = \Iliich246\YicmsCommon\Assets\DeveloperAsset::register($this);
 
@@ -22,20 +23,42 @@ $url = Url::toRoute([
     'update', 'id' => $page->id
 ]);
 $src = $bundle->baseUrl . '/loader.svg';
+
 $js = <<<EOT
 
 $('#{$pjaxName}').on('pjax:send', function() {
   $('#{$modalName}').find('.modal-content').empty().append('<img src="{$src}" style="text-align:center">');
-  console.log('penis');
 });
 
-$('.field-item').on('click', function(event) {
+$('#{$pjaxName}').on('pjax:success', function(event) {
+    console.log(parseInt($(event.target).find('form').data('yicmsSaved')));
+
+    if ($(event.target).find('form').attr('data-yicms-saved') !== true) {
+        console.log('no data');
+    } else {
+        console.log('data');
+    }
+
+    $.pjax({
+        url: '{$url}',
+        container: '#update-fields-list-container',
+        scrollTo: false,
+        push: false,
+        type: "POST",
+        timeout: 2500
+    });
+});
+
+//$('#{$pjaxName}')
+//  .on('pjax:start', function() { $('#{$pjaxName}').fadeOut(200); })
+//  .on('pjax:end',   function() { $('#{$pjaxName}').fadeIn(200); })
+
+$(document).on('click', '.field-item', function(event) {
 
     console.log($(this).find('p').data('field-template-id'));
 
     var templateData = $(this).find('p').data('field-template-id');
 
-    $.pjax.defaults.timeout = 20000;
     $.pjax({
         url: '{$url}&fieldTemplateId=' + templateData,
         container: '#{$pjaxName}',
@@ -47,6 +70,18 @@ $('.field-item').on('click', function(event) {
 
     $('#{$modalName}').modal('show');
 });
+
+$('.add-field').on('click', function() {
+    $.pjax({
+        url: '{$url}',
+        container: '#{$pjaxName}',
+        scrollTo: false,
+        push: false,
+        type: "POST",
+        timeout: 2500
+    });
+});
+
 EOT;
 
 $this->registerJs($js, $this::POS_READY);
@@ -93,7 +128,11 @@ $this->registerJs($js, $this::POS_READY);
                 </div>
             <?php endif; ?>
 
-            <?php $pjax = Pjax::begin() ?>
+            <?php $pjax = Pjax::begin([
+                'options' => [
+                    'id' => 'update-page-container',
+                ]
+            ]) ?>
             <?php $form = ActiveForm::begin([
                 'id' => 'create-update-page-form',
                 'options' => [
@@ -101,6 +140,13 @@ $this->registerJs($js, $this::POS_READY);
                 ],
             ]);
             ?>
+
+            <?php if (isset($success) && $success): ?>
+            <div class="alert alert-success alert-dismissible fade in" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                <strong>Success!</strong> Page data updated.
+            </div>
+            <?php endif; ?>
 
             <div class="row">
                 <div class="col-xs-12">
@@ -147,38 +193,10 @@ $this->registerJs($js, $this::POS_READY);
 
     <?php if ($page->scenario == Pages::SCENARIO_CREATE): return; endif;?>
 
-    <div class="row content-block form-block">
-        <div class="col-xs-12">
-            <div class="content-block-title">
-                <h3>List of page fields</h3>
-            </div>
-            <div class="row control-buttons">
-                <div class="col-xs-12">
-                    <button class="btn btn-primary" data-toggle="modal" data-target="#fieldsDevModal">
-                        <span class="glyphicon glyphicon-plus-sign"></span> Add new field
-                    </button>
-                </div>
-            </div>
-            <?php if (isset($fieldTemplates)): ?>
-            <div class="list-block">
-                <?php foreach ($fieldTemplates as $fieldTemplate): ?>
-                    <div class="row list-items field-item">
-                        <div class="col-xs-10 list-title">
-                            <p data-field-template="<?= $fieldTemplate->field_template_reference ?>"
-                               data-field-template-id="<?= $fieldTemplate->id ?>"
-                            >
-                                <?= $fieldTemplate->program_name ?> (<?= $fieldTemplate->getTypeName() ?>)
-                            </p>
-                        </div>
-                        <div class="col-xs-2 list-controls">
-
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-            <?php endif; ?>
-        </div>
-    </div>
+    <?= $this->render('/pjax/update-fields-list-container', [
+        //'devFieldGroup' => $devFieldGroup,
+        'fieldTemplates' => $fieldTemplates,
+    ]) ?>
 
     <?= FieldsDevInputWidget::widget([
         'devFieldGroup' => $devFieldGroup

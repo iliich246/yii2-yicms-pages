@@ -95,57 +95,67 @@ class DeveloperController extends Controller
 
         $page->scenario = Pages::SCENARIO_UPDATE;
 
+        //update page via pjax
         if ($page->load(Yii::$app->request->post()) && $page->validate()) {
+
             if ($page->save()) {
-                //return $this->redirect(Url::toRoute(['update', 'id' => $model->id]));
+                $success = true;
             } else {
-                //TODO: add bootbox error
+                $success = false;
             }
+
+            return $this->render('/developer/create_update', [
+                'page' => $page,
+                'success' => $success
+            ]);
         }
 
+        //initialize fields group
         $devFieldGroup = new DevFieldsGroup();
         $devFieldGroup->setFieldsReferenceAble($page);
         $devFieldGroup->initialize($fieldTemplateId);
 
+        //try to load validate and save field via pjax
         if ($devFieldGroup->load(Yii::$app->request->post()) && $devFieldGroup->validate()) {
 
             if (!$devFieldGroup->save()) {
                 //TODO: bootbox error
             }
 
-            return $this->render('/developer/create_update', [
-                'page' => $page,
+            return FieldsDevInputWidget::widget([
                 'devFieldGroup' => $devFieldGroup,
+                'dataSaved' => true,
             ]);
         }
-        //throw new Exception(print_r(Yii::$app->request->post(),1));
-        //throw new Exception(print_r(Yii::$app->request->post(),1));
 
+        //Need to refresh fields modal window via pjax
         if (Yii::$app->request->isPjax &&
             Yii::$app->request->post('_pjax') == '#'.FieldsDevInputWidget::getPjaxContainerId())
         {
-            return $this->render('/developer/create_update', [
-                'page' => $page,
-                'devFieldGroup' => $devFieldGroup,
+            return FieldsDevInputWidget::widget([
+                'devFieldGroup' => $devFieldGroup
+            ]);
+        }
+
+        //Need to update fields list vie Pjax
+        if (Yii::$app->request->isPjax &&
+            Yii::$app->request->post('_pjax') == '#update-fields-list-container') {
+
+            $fieldTemplates = FieldTemplate::getList($page->field_template_reference);
+
+            return $this->render('/pjax/update-fields-list-container', [
+                'fieldTemplates' => $fieldTemplates,
             ]);
         }
 
         $fieldTemplates = FieldTemplate::getList($page->field_template_reference);
+        //throw new \yii\base\Exception(print_r(Yii::$app->request->post(), true));
 
         return $this->render('/developer/create_update', [
             'page' => $page,
             'devFieldGroup' => $devFieldGroup,
             'fieldTemplates' => $fieldTemplates,
         ]);
-    }
-
-    public function actionFieldAjax($id, $fieldTemplate = null)
-    {
-        /** @var Pages $page */
-        $page = Pages::findOne($id);
-
-        if (!$page)
-            throw new NotFoundHttpException('Wrong page ID');
     }
 
     /**

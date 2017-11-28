@@ -105,12 +105,35 @@ class Pages extends ActiveRecord implements
     }
 
     /**
+     * Validates the program name.
+     * This method serves as the inline validation for page program name.
+     *
+     * @param string $attribute the attribute currently being validated
+     * @param array $params the additional name-value pairs given in the rule
+     */
+    public function validateProgramName($attribute, $params)
+    {
+        if (!$this->hasErrors()) {
+
+            $pagesQuery = Pages::find()->where(['program_name' => $this->program_name]);
+
+            if ($this->scenario == self::SCENARIO_UPDATE)
+                $pagesQuery->andWhere(['not in', 'program_name', $this->getOldAttribute('program_name')]);
+
+            $pages = $pagesQuery->all();
+            if ($pages)$this->addError($attribute, 'Page with same name already exist in system');
+        }
+    }
+
+    /**
      * @inheritdoc
      */
     public function afterValidate()
     {
         if ($this->hasErrors()) return;
-        $this->field_template_reference = FieldTemplate::generateTemplateReference();
+
+        if ($this->scenario == self::SCENARIO_CREATE)
+            $this->field_template_reference = FieldTemplate::generateTemplateReference();
     }
 
     /**
@@ -148,36 +171,10 @@ class Pages extends ActiveRecord implements
         return $this->field_reference;
     }
 
-    /**
-     * Validates the program name.
-     * This method serves as the inline validation for page program name.
-     *
-     * @param string $attribute the attribute currently being validated
-     * @param array $params the additional name-value pairs given in the rule
-     */
-    public function validateProgramName($attribute, $params)
-    {
-        if (!$this->hasErrors()) {
 
-            $pagesQuery = Pages::find()->where(['program_name' => $this->program_name]);
-
-            if ($this->scenario == self::SCENARIO_UPDATE)
-                $pagesQuery->andWhere(['not in', 'program_name', $this->program_name]);
-
-            $pages = $pagesQuery->all();
-            if ($pages)$this->addError($attribute, 'Page with same name already exist in system');
-        }
-    }
 
     public function create()
     {
 
     }
-
-//    public function update()
-//    {
-//
-//    }
-
-
 }

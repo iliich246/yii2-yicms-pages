@@ -8,7 +8,6 @@ use Iliich246\YicmsCommon\Fields\FieldTemplate;
 use Iliich246\YicmsCommon\Fields\FieldsInterface;
 use Iliich246\YicmsCommon\Fields\FieldReferenceInterface;
 
-
 /**
  * Class Pages
  *
@@ -134,6 +133,53 @@ class Pages extends ActiveRecord implements
 
         if ($this->scenario == self::SCENARIO_CREATE)
             $this->field_template_reference = FieldTemplate::generateTemplateReference();
+
+        //throw new Exception(print_r($this, true));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function save($runValidation = true, $attributeNames = null)
+    {
+        if ($this->scenario == self::SCENARIO_UPDATE) return parent::save($runValidation, $attributeNames);
+
+        if (!$this->standardFields) return parent::save($runValidation, $attributeNames);
+
+
+        //create standard seo fields
+        $fieldTemplate = new FieldTemplate();
+        $fieldTemplate->field_template_reference = $this->field_template_reference;
+        $fieldTemplate->scenario = FieldTemplate::SCENARIO_CREATE;
+        $fieldTemplate->program_name = 'title';
+        $fieldTemplate->type = FieldTemplate::TYPE_INPUT;
+        $fieldTemplate->visible = true;
+        $fieldTemplate->editable = true;
+
+        $fieldTemplate->save(false);
+
+        $fieldTemplate = new FieldTemplate();
+        $fieldTemplate->field_template_reference = $this->field_template_reference;
+        $fieldTemplate->scenario = FieldTemplate::SCENARIO_CREATE;
+        $fieldTemplate->program_name = 'meta_description';
+        $fieldTemplate->type = FieldTemplate::TYPE_TEXT;
+        $fieldTemplate->visible = true;
+        $fieldTemplate->editable = true;
+
+        $fieldTemplate->save(false);
+
+        $fieldTemplate = new FieldTemplate();
+        $fieldTemplate->field_template_reference = $this->field_template_reference;
+        $fieldTemplate->scenario = FieldTemplate::SCENARIO_CREATE;
+        $fieldTemplate->program_name = 'meta_keywords';
+        $fieldTemplate->type = FieldTemplate::TYPE_TEXT;
+        $fieldTemplate->visible = true;
+        $fieldTemplate->editable = true;
+
+        $fieldTemplate->save(false);
+        //TODO: makes create translates for standard fields
+
+        return parent::save(false);
     }
 
     /**
@@ -169,12 +215,5 @@ class Pages extends ActiveRecord implements
     public function getFieldReference()
     {
         return $this->field_reference;
-    }
-
-
-
-    public function create()
-    {
-
     }
 }

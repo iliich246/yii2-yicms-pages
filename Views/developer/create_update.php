@@ -31,13 +31,8 @@ $('#{$pjaxName}').on('pjax:send', function() {
 });
 
 $('#{$pjaxName}').on('pjax:success', function(event) {
-    console.log(parseInt($(event.target).find('form').data('yicmsSaved')));
 
-    if ($(event.target).find('form').attr('data-yicms-saved') !== true) {
-        console.log('no data');
-    } else {
-        console.log('data');
-    }
+    if (!$(event.target).find('form').is('[data-yicms-saved]')) return false;
 
     $.pjax({
         url: '{$url}',
@@ -47,6 +42,8 @@ $('#{$pjaxName}').on('pjax:success', function(event) {
         type: "POST",
         timeout: 2500
     });
+
+    $('#{$modalName}').modal('hide');
 });
 
 //$('#{$pjaxName}')

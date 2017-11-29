@@ -1,0 +1,27 @@
+actor: Tester
+paths:
+    tests: tests
+    log: tests/_output
+    data: tests/_data
+    support: tests/_support
+    envs: tests/_envs
+settings:
+    bootstrap: _bootstrap.php
+    colors: true
+    memory_limit: 1024M
+extensions:
+    enabled:
+        - Codeception\Extension\RunFailed
+modules:
+    config:
+        Yii2:
+            configFile: '/../../config/test.php'
+            cleanup: false
+        Db:
+            dsn: 'mysql:host=localhost;dbname=yicms_test'
+            user: 'root'
+            password: ''
+            populate: true # run populator before all test
+            #cleanup: true # run populator before each test
+            populator: 'mysql -u $user $dbname < tests/_data/yicms_test.sql'
+            #dump: tests/_data/yicms_test.sql

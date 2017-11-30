@@ -22,6 +22,7 @@ class m171114_174807_pages_init extends Migration
             'visible' => $this->boolean(),
             'system_route' => $this->string(),
             'ruled_route' => $this->string(),
+            'pages_order' => $this->integer(),
             'field_template_reference' => $this->string(),
             'field_reference' => $this->string(),
             'file_template_reference' => $this->string(),

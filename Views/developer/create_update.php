@@ -191,7 +191,7 @@ $this->registerJs($js, $this::POS_READY);
     <?php if ($page->scenario == Pages::SCENARIO_CREATE): return; endif;?>
 
     <?= $this->render('/pjax/update-fields-list-container', [
-        //'devFieldGroup' => $devFieldGroup,
+        'page' => $page,
         'fieldTemplates' => $fieldTemplates,
     ]) ?>
 

@@ -17,6 +17,7 @@ use Iliich246\YicmsCommon\Fields\FieldReferenceInterface;
  * @property bool $visible
  * @property string $system_route
  * @property string $ruled_route
+ * @property integer $pages_order
  * @property string $field_template_reference
  * @property string $field_reference
  * @property string $file_template_reference
@@ -131,10 +132,10 @@ class Pages extends ActiveRecord implements
     {
         if ($this->hasErrors()) return;
 
-        if ($this->scenario == self::SCENARIO_CREATE)
+        if ($this->scenario == self::SCENARIO_CREATE) {
             $this->field_template_reference = FieldTemplate::generateTemplateReference();
-
-        //throw new Exception(print_r($this, true));
+            $this->field_reference = $this->field_template_reference;
+        }
     }
 
     /**
@@ -146,7 +147,6 @@ class Pages extends ActiveRecord implements
 
         if (!$this->standardFields) return parent::save($runValidation, $attributeNames);
 
-
         //create standard seo fields
         $fieldTemplate = new FieldTemplate();
         $fieldTemplate->field_template_reference = $this->field_template_reference;
@@ -155,6 +155,8 @@ class Pages extends ActiveRecord implements
         $fieldTemplate->type = FieldTemplate::TYPE_INPUT;
         $fieldTemplate->visible = true;
         $fieldTemplate->editable = true;
+        $fieldTemplate->is_main = true;
+        $fieldTemplate->field_order = 1;
 
         $fieldTemplate->save(false);
 
@@ -165,6 +167,8 @@ class Pages extends ActiveRecord implements
         $fieldTemplate->type = FieldTemplate::TYPE_TEXT;
         $fieldTemplate->visible = true;
         $fieldTemplate->editable = true;
+        $fieldTemplate->is_main = false;
+        $fieldTemplate->field_order = 2;
 
         $fieldTemplate->save(false);
 
@@ -175,6 +179,8 @@ class Pages extends ActiveRecord implements
         $fieldTemplate->type = FieldTemplate::TYPE_TEXT;
         $fieldTemplate->visible = true;
         $fieldTemplate->editable = true;
+        $fieldTemplate->is_main = false;
+        $fieldTemplate->field_order = 3;
 
         $fieldTemplate->save(false);
         //TODO: makes create translates for standard fields

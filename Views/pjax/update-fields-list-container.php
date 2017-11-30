@@ -5,6 +5,7 @@ use Iliich246\YicmsCommon\Fields\FieldTemplate;
 
 /* @var $devFieldGroup \Iliich246\YicmsCommon\Fields\DevFieldsGroup */
 /* @var $fieldTemplates FieldTemplate[] */
+/* @var $page \Iliich246\YicmsPages\Base\Pages */
 
 ?>
 
@@ -47,6 +48,18 @@ use Iliich246\YicmsCommon\Fields\FieldTemplate;
                             <?php endif; ?>
                             <?php if ($fieldTemplate->is_main): ?>
                                 <span class="glyphicon glyphicon-tower"></span>
+                            <?php endif; ?>
+                            <?php if ($fieldTemplate->canUpOrder()): ?>
+                                <span class="glyphicon glyphicon-arrow-up"
+                                      data-page-id="<?= $page->id ?>"
+                                      data-field-template-id="<?= $fieldTemplate->id ?>">
+                                </span>
+                            <?php endif; ?>
+                            <?php if ($fieldTemplate->canDownOrder()): ?>
+                                <span class="glyphicon glyphicon-arrow-down"
+                                      data-page-id="<?= $page->id ?>"
+                                      data-field-template-id="<?= $fieldTemplate->id ?>">
+                                </span>
                             <?php endif; ?>
                         </div>
                     </div>

@@ -2,18 +2,17 @@
 
 namespace Iliich246\YicmsPages\Controllers;
 
-use Iliich246\YicmsCommon\Fields\DevFieldsGroup;
-use Iliich246\YicmsCommon\Fields\FieldTemplate;
-use Iliich246\YicmsCommon\Widgets\FieldsDevInputWidget;
 use Yii;
-use yii\base\Exception;
 use yii\base\Model;
 use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use Iliich246\YicmsCommon\Languages\Language;
+use Iliich246\YicmsCommon\Fields\FieldTemplate;
+use Iliich246\YicmsCommon\Fields\DevFieldsGroup;
+use Iliich246\YicmsCommon\Widgets\FieldsDevInputWidget;
 use Iliich246\YicmsPages\Base\Pages;
 use Iliich246\YicmsPages\Base\PagesException;
-use Iliich246\YicmsCommon\Languages\Language;
 use Iliich246\YicmsPages\Base\PageDevTranslatesForm;
 
 /**
@@ -81,6 +80,7 @@ class DeveloperController extends Controller
 
     /**
      * @param $id
+     * //TODO: change $fieldTemplateId to $fieldTemplateReference
      * @param null|string $fieldTemplateId
      * @return string
      * @throws NotFoundHttpException
@@ -141,15 +141,18 @@ class DeveloperController extends Controller
         if (Yii::$app->request->isPjax &&
             Yii::$app->request->post('_pjax') == '#update-fields-list-container') {
 
-            $fieldTemplates = FieldTemplate::getList($page->field_template_reference);
+            $fieldTemplates = FieldTemplate::getListQuery($page->field_template_reference)
+                                            ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
+                                            ->all();
 
             return $this->render('/pjax/update-fields-list-container', [
                 'fieldTemplates' => $fieldTemplates,
             ]);
         }
 
-        $fieldTemplates = FieldTemplate::getList($page->field_template_reference);
-        //throw new \yii\base\Exception(print_r(Yii::$app->request->post(), true));
+        $fieldTemplates = FieldTemplate::getListQuery($page->field_template_reference)
+                                        ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
+                                        ->all();
 
         return $this->render('/developer/create_update', [
             'page' => $page,
@@ -197,5 +200,69 @@ class DeveloperController extends Controller
             'page' => $page,
             'translateModels' => $translateModels,
         ]);
+    }
+
+    /**
+     * Action for up field template order
+     * @param $id
+     * @param $fieldTemplateId
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
+     */
+    public function actionFieldTemplateUpOrder($id, $fieldTemplateId)
+    {
+        /** @var Pages $page */
+        $page = Pages::findOne($id);
+
+        if (!$page) throw new NotFoundHttpException('Wrong page id');
+
+        /** @var FieldTemplate $fieldTemplate */
+        $fieldTemplate = FieldTemplate::findOne($fieldTemplateId);
+
+        if (!$fieldTemplate) throw new NotFoundHttpException('Wrong fieldTemplateId');
+
+        $fieldTemplate->upOrder();
+
+        $fieldTemplates = FieldTemplate::getListQuery($page->field_template_reference)
+                                        ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
+                                        ->all();
+
+        if (Yii::$app->request->isPjax)
+            return $this->render('/pjax/update-fields-list-container', [
+                'fieldTemplates' => $fieldTemplates,
+            ]);
+        else return $this->redirect(Url::toRoute(['update', 'id' => $id]));
+    }
+
+    /**
+     * Action for up field template order
+     * @param $id
+     * @param $fieldTemplateId
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
+     */
+    public function actionFieldTemplateDownOrder($id, $fieldTemplateId)
+    {
+        /** @var Pages $page */
+        $page = Pages::findOne($id);
+
+        if (!$page) throw new NotFoundHttpException('Wrong page id');
+
+        /** @var FieldTemplate $fieldTemplate */
+        $fieldTemplate = FieldTemplate::findOne($fieldTemplateId);
+
+        if (!$fieldTemplate) throw new NotFoundHttpException('Wrong fieldTemplateId');
+
+        $fieldTemplate->downOrder();
+
+        $fieldTemplates = FieldTemplate::getListQuery($page->field_template_reference)
+                                        ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
+                                        ->all();
+
+        if (Yii::$app->request->isPjax)
+            return $this->render('/pjax/update-fields-list-container', [
+                'fieldTemplates' => $fieldTemplates,
+            ]);
+        else return $this->redirect(Url::toRoute(['update', 'id' => $id]));
     }
 }

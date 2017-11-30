@@ -22,6 +22,19 @@ $pjaxName  = FieldsDevInputWidget::getPjaxContainerId();
 $url = Url::toRoute([
     'update', 'id' => $page->id
 ]);
+
+$urlFieldOrderUp = Url::toRoute([
+    'field-template-up-order',
+    'id' => $page->id,
+]);
+
+$urlFieldOrderDown = Url::toRoute([
+    'field-template-down-order',
+    'id' => $page->id,
+]);
+
+
+
 $src = $bundle->baseUrl . '/loader.svg';
 
 $js = <<<EOT
@@ -50,14 +63,14 @@ $('#{$pjaxName}').on('pjax:success', function(event) {
 //  .on('pjax:start', function() { $('#{$pjaxName}').fadeOut(200); })
 //  .on('pjax:end',   function() { $('#{$pjaxName}').fadeIn(200); })
 
-$(document).on('click', '.field-item', function(event) {
+$(document).on('click', '.field-item p', function(event) {
 
-    console.log($(this).find('p').data('field-template-id'));
+    console.log($(this).data('field-template-id'));
 
-    var templateData = $(this).find('p').data('field-template-id');
+    var templateData = $(this).data('field-template-id');
 
     $.pjax({
-        url: '{$url}&fieldTemplateId=' + templateData,
+        url: '{$url}&fieldTemplateReference=' + templateData,
         container: '#{$pjaxName}',
         scrollTo: false,
         push: false,
@@ -72,6 +85,28 @@ $('.add-field').on('click', function() {
     $.pjax({
         url: '{$url}',
         container: '#{$pjaxName}',
+        scrollTo: false,
+        push: false,
+        type: "POST",
+        timeout: 2500
+    });
+});
+
+$(document).on('click', '.glyphicon-arrow-up', function() {
+    $.pjax({
+        url: '{$urlFieldOrderUp}&fieldTemplateId=' + $(this).data('fieldTemplateId'),
+        container: '#update-fields-list-container',
+        scrollTo: false,
+        push: false,
+        type: "POST",
+        timeout: 2500
+    });
+});
+
+$(document).on('click', '.glyphicon-arrow-down', function() {
+    $.pjax({
+        url: '{$urlFieldOrderDown}&fieldTemplateId=' + $(this).data('fieldTemplateId'),
+        container: '#update-fields-list-container',
         scrollTo: false,
         push: false,
         type: "POST",

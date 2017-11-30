@@ -3,6 +3,7 @@
 namespace Iliich246\YicmsPages\Controllers;
 
 use Yii;
+use yii\base\Exception;
 use yii\base\Model;
 use yii\helpers\Url;
 use yii\web\Controller;
@@ -79,13 +80,12 @@ class DeveloperController extends Controller
     }
 
     /**
-     * @param $id
-     * //TODO: change $fieldTemplateId to $fieldTemplateReference
-     * @param null|string $fieldTemplateId
+     * @param $id *
+     * @param null|string $fieldTemplateReference
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionUpdate($id, $fieldTemplateId = null)
+    public function actionUpdate($id, $fieldTemplateReference = null)
     {
         /** @var Pages $page */
         $page = Pages::findOne($id);
@@ -113,7 +113,7 @@ class DeveloperController extends Controller
         //initialize fields group
         $devFieldGroup = new DevFieldsGroup();
         $devFieldGroup->setFieldsReferenceAble($page);
-        $devFieldGroup->initialize($fieldTemplateId);
+        $devFieldGroup->initialize($fieldTemplateReference);
 
         //try to load validate and save field via pjax
         if ($devFieldGroup->load(Yii::$app->request->post()) && $devFieldGroup->validate()) {
@@ -146,6 +146,7 @@ class DeveloperController extends Controller
                                             ->all();
 
             return $this->render('/pjax/update-fields-list-container', [
+                'page' => $page,
                 'fieldTemplates' => $fieldTemplates,
             ]);
         }
@@ -220,6 +221,7 @@ class DeveloperController extends Controller
         $fieldTemplate = FieldTemplate::findOne($fieldTemplateId);
 
         if (!$fieldTemplate) throw new NotFoundHttpException('Wrong fieldTemplateId');
+        //throw new Exception(print_r($fieldTemplate, true));
 
         $fieldTemplate->upOrder();
 
@@ -229,6 +231,7 @@ class DeveloperController extends Controller
 
         if (Yii::$app->request->isPjax)
             return $this->render('/pjax/update-fields-list-container', [
+                'page' => $page,
                 'fieldTemplates' => $fieldTemplates,
             ]);
         else return $this->redirect(Url::toRoute(['update', 'id' => $id]));
@@ -252,7 +255,7 @@ class DeveloperController extends Controller
         $fieldTemplate = FieldTemplate::findOne($fieldTemplateId);
 
         if (!$fieldTemplate) throw new NotFoundHttpException('Wrong fieldTemplateId');
-
+        //throw new Exception(print_r($fieldTemplate, true));
         $fieldTemplate->downOrder();
 
         $fieldTemplates = FieldTemplate::getListQuery($page->field_template_reference)
@@ -261,6 +264,7 @@ class DeveloperController extends Controller
 
         if (Yii::$app->request->isPjax)
             return $this->render('/pjax/update-fields-list-container', [
+                'page' => $page,
                 'fieldTemplates' => $fieldTemplates,
             ]);
         else return $this->redirect(Url::toRoute(['update', 'id' => $id]));

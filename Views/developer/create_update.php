@@ -38,7 +38,7 @@ $urlFieldOrderDown = Url::toRoute([
 
 $src = $bundle->baseUrl . '/loader.svg';
 
-$js = <<<EOT
+$js = <<<JS
 
 $('#{$pjaxName}').on('pjax:send', function() {
   $('#{$modalName}').find('.modal-content').empty().append('<img src="{$src}" style="text-align:center">');
@@ -115,7 +115,7 @@ $(document).on('click', '.glyphicon-arrow-down', function() {
     });
 });
 
-EOT;
+JS;
 
 $this->registerJs($js, $this::POS_READY);
 
@@ -233,6 +233,7 @@ $this->registerJs($js, $this::POS_READY);
     ]) ?>
 
     <?= FieldsDevInputWidget::widget([
-        'devFieldGroup' => $devFieldGroup
+        'devFieldGroup' => $devFieldGroup,
+        'deleteLink' => Url::toRoute(['delete-field-template', 'id' => $page->id])
     ])
     ?>

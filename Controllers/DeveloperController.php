@@ -299,4 +299,48 @@ class DeveloperController extends Controller
             ]);
         else return $this->redirect(Url::toRoute(['update', 'id' => $id]));
     }
+
+    /**
+     * Delete page field template
+     * @param $id
+     * @param $fieldTemplateId
+     * @return string|\yii\web\Response
+     * @throws NotFoundHttpException
+     */
+    public function actionDeleteFieldTemplate($id, $fieldTemplateId)
+    {
+        if (!Yii::$app->request->isPjax) throw new NotFoundHttpException();
+
+        /** @var Pages $page */
+        $page = Pages::findOne($id);
+
+        if (!$page) throw new NotFoundHttpException('Wrong page id');
+
+        /** @var FieldTemplate $fieldTemplate */
+        $fieldTemplate = FieldTemplate::findOne($fieldTemplateId);
+
+        if (!$fieldTemplate) throw new NotFoundHttpException('Wrong fieldTemplateId');
+
+        if ($fieldTemplate->isConstraints())
+            return $this->redirect(Url::toRoute(['xxx', 'id' => $id]));
+
+
+        //$fieldTemplate->delete();
+
+        $fieldTemplatesTranslatable = FieldTemplate::getListQuery($page->field_template_reference)
+                                            ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE])
+                                            ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
+                                            ->all();
+
+        $fieldTemplatesSingle = FieldTemplate::getListQuery($page->field_template_reference)
+                                        ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_SINGLE])
+                                        ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
+                                        ->all();
+
+        return $this->render('/pjax/update-fields-list-container', [
+            'page' => $page,
+            'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
+            'fieldTemplatesSingle' => $fieldTemplatesSingle
+        ]);
+    }
 }

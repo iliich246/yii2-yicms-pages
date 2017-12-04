@@ -141,24 +141,38 @@ class DeveloperController extends Controller
         if (Yii::$app->request->isPjax &&
             Yii::$app->request->post('_pjax') == '#update-fields-list-container') {
 
-            $fieldTemplates = FieldTemplate::getListQuery($page->field_template_reference)
-                                            ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
-                                            ->all();
+            $fieldTemplatesTranslatable = FieldTemplate::getListQuery($page->field_template_reference)
+                ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE])
+                ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
+                ->all();
+
+            $fieldTemplatesSingle = FieldTemplate::getListQuery($page->field_template_reference)
+                ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_SINGLE])
+                ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
+                ->all();
 
             return $this->render('/pjax/update-fields-list-container', [
                 'page' => $page,
-                'fieldTemplates' => $fieldTemplates,
+                'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
+                'fieldTemplatesSingle' => $fieldTemplatesSingle
             ]);
         }
 
-        $fieldTemplates = FieldTemplate::getListQuery($page->field_template_reference)
+        $fieldTemplatesTranslatable = FieldTemplate::getListQuery($page->field_template_reference)
+                                        ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE])
+                                        ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
+                                        ->all();
+
+        $fieldTemplatesSingle = FieldTemplate::getListQuery($page->field_template_reference)
+                                        ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_SINGLE])
                                         ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
                                         ->all();
 
         return $this->render('/developer/create_update', [
             'page' => $page,
             'devFieldGroup' => $devFieldGroup,
-            'fieldTemplates' => $fieldTemplates,
+            'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
+            'fieldTemplatesSingle' => $fieldTemplatesSingle
         ]);
     }
 
@@ -225,14 +239,22 @@ class DeveloperController extends Controller
 
         $fieldTemplate->upOrder();
 
-        $fieldTemplates = FieldTemplate::getListQuery($page->field_template_reference)
-                                        ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
-                                        ->all();
+
+        $fieldTemplatesTranslatable = FieldTemplate::getListQuery($page->field_template_reference)
+                                            ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE])
+                                            ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
+                                            ->all();
+
+        $fieldTemplatesSingle = FieldTemplate::getListQuery($page->field_template_reference)
+                                            ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_SINGLE])
+                                            ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
+                                            ->all();
 
         if (Yii::$app->request->isPjax)
             return $this->render('/pjax/update-fields-list-container', [
                 'page' => $page,
-                'fieldTemplates' => $fieldTemplates,
+                'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
+                'fieldTemplatesSingle' => $fieldTemplatesSingle
             ]);
         else return $this->redirect(Url::toRoute(['update', 'id' => $id]));
     }
@@ -258,14 +280,22 @@ class DeveloperController extends Controller
         //throw new Exception(print_r($fieldTemplate, true));
         $fieldTemplate->downOrder();
 
-        $fieldTemplates = FieldTemplate::getListQuery($page->field_template_reference)
+
+        $fieldTemplatesTranslatable = FieldTemplate::getListQuery($page->field_template_reference)
+                                            ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE])
+                                            ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
+                                            ->all();
+
+        $fieldTemplatesSingle = FieldTemplate::getListQuery($page->field_template_reference)
+                                        ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_SINGLE])
                                         ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
                                         ->all();
 
         if (Yii::$app->request->isPjax)
             return $this->render('/pjax/update-fields-list-container', [
                 'page' => $page,
-                'fieldTemplates' => $fieldTemplates,
+                'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
+                'fieldTemplatesSingle' => $fieldTemplatesSingle
             ]);
         else return $this->redirect(Url::toRoute(['update', 'id' => $id]));
     }

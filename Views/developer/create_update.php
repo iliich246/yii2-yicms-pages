@@ -11,7 +11,8 @@ use Iliich246\YicmsCommon\Fields\FieldTemplate;
 /* @var $this \yii\web\View */
 /* @var $page \Iliich246\YicmsPages\Base\Pages */
 /* @var $devFieldGroup \Iliich246\YicmsCommon\Fields\DevFieldsGroup */
-/* @var $fieldTemplates FieldTemplate[] */
+/* @var $fieldTemplatesTranslatable FieldTemplate[] */
+/* @var $fieldTemplatesSingle FieldTemplate[] */
 /* @var $success bool */
 
 $bundle = \Iliich246\YicmsCommon\Assets\DeveloperAsset::register($this);
@@ -227,7 +228,8 @@ $this->registerJs($js, $this::POS_READY);
 
     <?= $this->render('/pjax/update-fields-list-container', [
         'page' => $page,
-        'fieldTemplates' => $fieldTemplates,
+        'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
+        'fieldTemplatesSingle' => $fieldTemplatesSingle
     ]) ?>
 
     <?= FieldsDevInputWidget::widget([

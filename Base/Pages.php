@@ -153,6 +153,7 @@ class Pages extends ActiveRecord implements
         $fieldTemplate->scenario = FieldTemplate::SCENARIO_CREATE;
         $fieldTemplate->program_name = 'title';
         $fieldTemplate->type = FieldTemplate::TYPE_INPUT;
+        $fieldTemplate->language_type = FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE;
         $fieldTemplate->visible = true;
         $fieldTemplate->editable = true;
         $fieldTemplate->is_main = true;
@@ -165,6 +166,7 @@ class Pages extends ActiveRecord implements
         $fieldTemplate->scenario = FieldTemplate::SCENARIO_CREATE;
         $fieldTemplate->program_name = 'meta_description';
         $fieldTemplate->type = FieldTemplate::TYPE_TEXT;
+        $fieldTemplate->language_type = FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE;
         $fieldTemplate->visible = true;
         $fieldTemplate->editable = true;
         $fieldTemplate->is_main = false;
@@ -177,6 +179,7 @@ class Pages extends ActiveRecord implements
         $fieldTemplate->scenario = FieldTemplate::SCENARIO_CREATE;
         $fieldTemplate->program_name = 'meta_keywords';
         $fieldTemplate->type = FieldTemplate::TYPE_TEXT;
+        $fieldTemplate->language_type = FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE;
         $fieldTemplate->visible = true;
         $fieldTemplate->editable = true;
         $fieldTemplate->is_main = false;

@@ -3,7 +3,7 @@
 use yii\helpers\Url;
 
 /* @var $this \yii\web\View */
-/* @var $pages \app\modules\pages\models\PagesDb[] */
+/* @var $pages \Iliich246\YicmsPages\Base\Pages[] */
 
 ?>
 <div class="col-sm-9 content">
@@ -43,4 +43,3 @@ use yii\helpers\Url;
         </div>
     </div>
 </div>
-

@@ -161,7 +161,7 @@ $this->registerJs($js, $this::POS_READY);
                 </div>
             <?php endif; ?>
 
-            <?php $pjax = Pjax::begin([
+            <?php Pjax::begin([
                 'options' => [
                     'id' => 'update-page-container',
                 ]

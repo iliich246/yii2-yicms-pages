@@ -321,11 +321,11 @@ class DeveloperController extends Controller
 
         if (!$fieldTemplate) throw new NotFoundHttpException('Wrong fieldTemplateId');
 
-        if ($fieldTemplate->isConstraints())
-            return $this->redirect(Url::toRoute(['xxx', 'id' => $id]));
+        //TODO: for field templates with constraints makes request of root password
+//        if ($fieldTemplate->isConstraints())
+//            return $this->redirect(Url::toRoute(['xxx', 'id' => $id]));
 
-
-        //$fieldTemplate->delete();
+        $fieldTemplate->delete();
 
         $fieldTemplatesTranslatable = FieldTemplate::getListQuery($page->field_template_reference)
                                             ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE])

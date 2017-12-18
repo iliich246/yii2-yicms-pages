@@ -337,8 +337,8 @@ class DeveloperController extends Controller
                                         ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
                                         ->all();
 
-        return $this->render('/pjax/update-fields-list-container', [
-            'page' => $page,
+        return $this->render('@yicms-common/pjax/update-fields-list-container', [
+            'templateFieldReference' => $page->getTemplateFieldReference(),
             'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
             'fieldTemplatesSingle' => $fieldTemplatesSingle
         ]);

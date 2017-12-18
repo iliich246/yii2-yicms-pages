@@ -226,14 +226,13 @@ $this->registerJs($js, $this::POS_READY);
 
     <?php if ($page->scenario == Pages::SCENARIO_CREATE): return; endif;?>
 
-    <?= $this->render('/pjax/update-fields-list-container', [
-        'page' => $page,
+    <?= $this->render('@yicms-common/pjax/update-fields-list-container', [
+        'templateFieldReference' => $page->getTemplateFieldReference(),
         'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
         'fieldTemplatesSingle' => $fieldTemplatesSingle
     ]) ?>
 
     <?= FieldsDevInputWidget::widget([
         'devFieldGroup' => $devFieldGroup,
-        'deleteLink' => Url::toRoute(['delete-field-template', 'id' => $page->id])
     ])
     ?>

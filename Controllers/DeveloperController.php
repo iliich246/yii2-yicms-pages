@@ -81,11 +81,10 @@ class DeveloperController extends Controller
 
     /**
      * @param $id *
-     * @param null|string $fieldTemplateReference
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionUpdate($id, $fieldTemplateReference = null)
+    public function actionUpdate($id)
     {
         /** @var Pages $page */
         $page = Pages::findOne($id);
@@ -112,8 +111,8 @@ class DeveloperController extends Controller
 
         //initialize fields group
         $devFieldGroup = new DevFieldsGroup();
-        $devFieldGroup->setFieldsReferenceAble($page);
-        $devFieldGroup->initialize($fieldTemplateReference);
+        $devFieldGroup->setFieldTemplateReference($page->getFieldTemplateReference());
+        $devFieldGroup->initialize(Yii::$app->request->post('_fieldTemplateId'));
 
         //try to load validate and save field via pjax
         if ($devFieldGroup->load(Yii::$app->request->post()) && $devFieldGroup->validate()) {
@@ -128,42 +127,12 @@ class DeveloperController extends Controller
             ]);
         }
 
-        //Need to refresh fields modal window via pjax
-        if (Yii::$app->request->isPjax &&
-            Yii::$app->request->post('_pjax') == '#'.FieldsDevInputWidget::getPjaxContainerId())
-        {
-            return FieldsDevInputWidget::widget([
-                'devFieldGroup' => $devFieldGroup
-            ]);
-        }
-
-        //Need to update fields list vie Pjax
-        if (Yii::$app->request->isPjax &&
-            Yii::$app->request->post('_pjax') == '#update-fields-list-container') {
-
-            $fieldTemplatesTranslatable = FieldTemplate::getListQuery($page->field_template_reference)
-                ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE])
-                ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
-                ->all();
-
-            $fieldTemplatesSingle = FieldTemplate::getListQuery($page->field_template_reference)
-                ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_SINGLE])
-                ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
-                ->all();
-
-            return $this->render('/pjax/update-fields-list-container', [
-                'page' => $page,
-                'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
-                'fieldTemplatesSingle' => $fieldTemplatesSingle
-            ]);
-        }
-
-        $fieldTemplatesTranslatable = FieldTemplate::getListQuery($page->field_template_reference)
+        $fieldTemplatesTranslatable = FieldTemplate::getListQuery($page->getFieldTemplateReference())
                                         ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE])
                                         ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
                                         ->all();
 
-        $fieldTemplatesSingle = FieldTemplate::getListQuery($page->field_template_reference)
+        $fieldTemplatesSingle = FieldTemplate::getListQuery($page->getFieldTemplateReference())
                                         ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_SINGLE])
                                         ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
                                         ->all();
@@ -214,133 +183,6 @@ class DeveloperController extends Controller
         return $this->render('/developer/page_translates', [
             'page' => $page,
             'translateModels' => $translateModels,
-        ]);
-    }
-
-    /**
-     * Action for up field template order
-     * @param $id
-     * @param $fieldTemplateId
-     * @return string|\yii\web\Response
-     * @throws NotFoundHttpException
-     */
-    public function actionFieldTemplateUpOrder($id, $fieldTemplateId)
-    {
-        /** @var Pages $page */
-        $page = Pages::findOne($id);
-
-        if (!$page) throw new NotFoundHttpException('Wrong page id');
-
-        /** @var FieldTemplate $fieldTemplate */
-        $fieldTemplate = FieldTemplate::findOne($fieldTemplateId);
-
-        if (!$fieldTemplate) throw new NotFoundHttpException('Wrong fieldTemplateId');
-        //throw new Exception(print_r($fieldTemplate, true));
-
-        $fieldTemplate->upOrder();
-
-
-        $fieldTemplatesTranslatable = FieldTemplate::getListQuery($page->field_template_reference)
-                                            ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE])
-                                            ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
-                                            ->all();
-
-        $fieldTemplatesSingle = FieldTemplate::getListQuery($page->field_template_reference)
-                                            ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_SINGLE])
-                                            ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
-                                            ->all();
-
-        if (Yii::$app->request->isPjax)
-            return $this->render('/pjax/update-fields-list-container', [
-                'page' => $page,
-                'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
-                'fieldTemplatesSingle' => $fieldTemplatesSingle
-            ]);
-        else return $this->redirect(Url::toRoute(['update', 'id' => $id]));
-    }
-
-    /**
-     * Action for up field template order
-     * @param $id
-     * @param $fieldTemplateId
-     * @return string|\yii\web\Response
-     * @throws NotFoundHttpException
-     */
-    public function actionFieldTemplateDownOrder($id, $fieldTemplateId)
-    {
-        /** @var Pages $page */
-        $page = Pages::findOne($id);
-
-        if (!$page) throw new NotFoundHttpException('Wrong page id');
-
-        /** @var FieldTemplate $fieldTemplate */
-        $fieldTemplate = FieldTemplate::findOne($fieldTemplateId);
-
-        if (!$fieldTemplate) throw new NotFoundHttpException('Wrong fieldTemplateId');
-        //throw new Exception(print_r($fieldTemplate, true));
-        $fieldTemplate->downOrder();
-
-
-        $fieldTemplatesTranslatable = FieldTemplate::getListQuery($page->field_template_reference)
-                                            ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE])
-                                            ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
-                                            ->all();
-
-        $fieldTemplatesSingle = FieldTemplate::getListQuery($page->field_template_reference)
-                                        ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_SINGLE])
-                                        ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
-                                        ->all();
-
-        if (Yii::$app->request->isPjax)
-            return $this->render('/pjax/update-fields-list-container', [
-                'page' => $page,
-                'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
-                'fieldTemplatesSingle' => $fieldTemplatesSingle
-            ]);
-        else return $this->redirect(Url::toRoute(['update', 'id' => $id]));
-    }
-
-    /**
-     * Delete page field template
-     * @param $id
-     * @param $fieldTemplateId
-     * @return string|\yii\web\Response
-     * @throws NotFoundHttpException
-     */
-    public function actionDeleteFieldTemplate($id, $fieldTemplateId)
-    {
-        if (!Yii::$app->request->isPjax) throw new NotFoundHttpException();
-
-        /** @var Pages $page */
-        $page = Pages::findOne($id);
-
-        if (!$page) throw new NotFoundHttpException('Wrong page id');
-
-        /** @var FieldTemplate $fieldTemplate */
-        $fieldTemplate = FieldTemplate::findOne($fieldTemplateId);
-
-        if (!$fieldTemplate) throw new NotFoundHttpException('Wrong fieldTemplateId');
-
-        //TODO: for field templates with constraints makes request of root password
-//        if ($fieldTemplate->isConstraints())
-//            return $this->redirect(Url::toRoute(['xxx', 'id' => $id]));
-
-        $fieldTemplate->delete();
-
-        $fieldTemplatesTranslatable = FieldTemplate::getListQuery($page->field_template_reference)
-                                            ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE])
-                                            ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
-                                            ->all();
-
-        $fieldTemplatesSingle = FieldTemplate::getListQuery($page->field_template_reference)
-                                        ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_SINGLE])
-                                        ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
-                                        ->all();
-
-        return $this->render('@yicms-common/pjax/update-fields-list-container', [
-            'templateFieldReference' => $page->getTemplateFieldReference(),
-            'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
-            'fieldTemplatesSingle' => $fieldTemplatesSingle
         ]);
     }
 }

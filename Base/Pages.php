@@ -213,7 +213,7 @@ class Pages extends ActiveRecord implements
     /**
      * @inheritdoc
      */
-    public function getTemplateFieldReference()
+    public function getFieldTemplateReference()
     {
         return $this->field_template_reference;
     }

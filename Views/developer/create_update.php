@@ -15,110 +15,7 @@ use Iliich246\YicmsCommon\Fields\FieldTemplate;
 /* @var $fieldTemplatesSingle FieldTemplate[] */
 /* @var $success bool */
 
-$bundle = \Iliich246\YicmsCommon\Assets\DeveloperAsset::register($this);
-
-$modalName = FieldsDevInputWidget::getModalWindowName();
-$formName  = FieldsDevInputWidget::getFormName();
-$pjaxName  = FieldsDevInputWidget::getPjaxContainerId();
-$url = Url::toRoute([
-    'update', 'id' => $page->id
-]);
-
-$urlFieldOrderUp = Url::toRoute([
-    'field-template-up-order',
-    'id' => $page->id,
-]);
-
-$urlFieldOrderDown = Url::toRoute([
-    'field-template-down-order',
-    'id' => $page->id,
-]);
-
-
-
-$src = $bundle->baseUrl . '/loader.svg';
-
-$js = <<<JS
-
-$('#{$pjaxName}').on('pjax:send', function() {
-  $('#{$modalName}').find('.modal-content').empty().append('<img src="{$src}" style="text-align:center">');
-});
-
-$('#{$pjaxName}').on('pjax:success', function(event) {
-
-    if (!$(event.target).find('form').is('[data-yicms-saved]')) return false;
-
-    $.pjax({
-        url: '{$url}',
-        container: '#update-fields-list-container',
-        scrollTo: false,
-        push: false,
-        type: "POST",
-        timeout: 2500
-    });
-
-    $('#{$modalName}').modal('hide');
-});
-
-//$('#{$pjaxName}')
-//  .on('pjax:start', function() { $('#{$pjaxName}').fadeOut(200); })
-//  .on('pjax:end',   function() { $('#{$pjaxName}').fadeIn(200); })
-
-$(document).on('click', '.field-item p', function(event) {
-
-    console.log($(this).data('field-template-id'));
-
-    var templateData = $(this).data('field-template-id');
-
-    $.pjax({
-        url: '{$url}&fieldTemplateReference=' + templateData,
-        container: '#{$pjaxName}',
-        scrollTo: false,
-        push: false,
-        type: "POST",
-        timeout: 2500
-    });
-
-    $('#{$modalName}').modal('show');
-});
-
-$('.add-field').on('click', function() {
-    $.pjax({
-        url: '{$url}',
-        container: '#{$pjaxName}',
-        scrollTo: false,
-        push: false,
-        type: "POST",
-        timeout: 2500
-    });
-});
-
-$(document).on('click', '.glyphicon-arrow-up', function() {
-    $.pjax({
-        url: '{$urlFieldOrderUp}&fieldTemplateId=' + $(this).data('fieldTemplateId'),
-        container: '#update-fields-list-container',
-        scrollTo: false,
-        push: false,
-        type: "POST",
-        timeout: 2500
-    });
-});
-
-$(document).on('click', '.glyphicon-arrow-down', function() {
-    $.pjax({
-        url: '{$urlFieldOrderDown}&fieldTemplateId=' + $(this).data('fieldTemplateId'),
-        container: '#update-fields-list-container',
-        scrollTo: false,
-        push: false,
-        type: "POST",
-        timeout: 2500
-    });
-});
-
-JS;
-
-$this->registerJs($js, $this::POS_READY);
-
+\Iliich246\YicmsCommon\Assets\FieldsDevAsset::register($this);
 ?>
 
 <div class="col-sm-9 content">
@@ -226,8 +123,8 @@ $this->registerJs($js, $this::POS_READY);
 
     <?php if ($page->scenario == Pages::SCENARIO_CREATE): return; endif;?>
 
-    <?= $this->render('@yicms-common/pjax/update-fields-list-container', [
-        'templateFieldReference' => $page->getTemplateFieldReference(),
+    <?= $this->render('@yicms-common/views/pjax/update-fields-list-container', [
+        'fieldTemplateReference' => $page->getFieldTemplateReference(),
         'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
         'fieldTemplatesSingle' => $fieldTemplatesSingle
     ]) ?>

@@ -2,6 +2,7 @@
 
 namespace Iliich246\YicmsPages\Base;
 
+use Yii;
 use yii\db\ActiveRecord;
 use Iliich246\YicmsCommon\Fields\FieldsHandler;
 use Iliich246\YicmsCommon\Fields\FieldTemplate;
@@ -74,6 +75,30 @@ class Pages extends ActiveRecord implements
             'visible' => 'Visible',
             'system_route' => 'System route'
         ];
+    }
+
+    /**
+     * Return instance of page by her name
+     * @param $programName
+     * @return self
+     * @throws PagesException
+     */
+    public static function getByName($programName)
+    {
+        /** @var self $page */
+        $page = self::find()
+            ->where(['program_name' => $programName])
+            ->one();
+
+        if ($page) return $page;
+
+        Yii::error("Сan not find field with name " . $programName, __METHOD__);
+
+        if (defined('YICMS_STRICT')) {
+            throw new PagesException('Сan not find page with name ' . $programName);
+        }
+
+        return new self();
     }
 
     /**

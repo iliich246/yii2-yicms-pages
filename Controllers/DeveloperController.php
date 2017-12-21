@@ -3,11 +3,11 @@
 namespace Iliich246\YicmsPages\Controllers;
 
 use Yii;
-use yii\base\Exception;
 use yii\base\Model;
 use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\BadRequestHttpException;
 use Iliich246\YicmsCommon\Languages\Language;
 use Iliich246\YicmsCommon\Fields\FieldTemplate;
 use Iliich246\YicmsCommon\Fields\DevFieldsGroup;
@@ -48,7 +48,9 @@ class DeveloperController extends Controller
      */
     public function actionList()
     {
-        $pages = Pages::find()->all();
+        $pages = Pages::find()->orderBy([
+            'pages_order' => SORT_ASC
+        ])->all();
 
         return $this->render('/developer/list', [
             'pages' => $pages,
@@ -183,6 +185,67 @@ class DeveloperController extends Controller
         return $this->render('/developer/page_translates', [
             'page' => $page,
             'translateModels' => $translateModels,
+        ]);
+    }
+
+    public function actionDeletePage()
+    {
+        //TODO: implement page delete action
+    }
+
+    /**
+     * Action for up page order
+     * @param $pageId
+     * @return string
+     * @throws BadRequestHttpException
+     * @throws NotFoundHttpException
+     */
+    public function actionPageUpOrder($pageId)
+    {
+        if (!Yii::$app->request->isPjax) throw new BadRequestHttpException();
+
+        /** @var Pages $page */
+        $page = Pages::findOne($pageId);
+
+        if (!$page) throw new NotFoundHttpException('Wrong pageId = ' . $pageId);
+
+        $page->configToChangeOfOrder();
+        $page->upOrder();
+
+        $pages = Pages::find()->orderBy([
+            'pages_order' => SORT_ASC
+        ])->all();
+
+        return $this->render('/pjax/update-pages-list-container', [
+            'pages' => $pages
+        ]);
+    }
+
+    /**
+     * Action for down page order
+     * @param $pageId
+     * @return string
+     * @throws BadRequestHttpException
+     * @throws NotFoundHttpException
+     */
+    public function actionPageDownOrder($pageId)
+    {
+        if (!Yii::$app->request->isPjax) throw new BadRequestHttpException();
+
+        /** @var Pages $page */
+        $page = Pages::findOne($pageId);
+
+        if (!$page) throw new NotFoundHttpException('Wrong pageId = ' . $pageId);
+
+        $page->configToChangeOfOrder();
+        $page->downOrder();
+
+        $pages = Pages::find()->orderBy([
+            'pages_order' => SORT_ASC
+        ])->all();
+
+        return $this->render('/pjax/update-pages-list-container', [
+            'pages' => $pages
         ]);
     }
 }

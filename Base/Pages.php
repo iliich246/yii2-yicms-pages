@@ -4,6 +4,8 @@ namespace Iliich246\YicmsPages\Base;
 
 use Yii;
 use yii\db\ActiveRecord;
+use Iliich246\YicmsCommon\Base\SortOrderTrait;
+use Iliich246\YicmsCommon\Base\SortOrderInterface;
 use Iliich246\YicmsCommon\Fields\FieldsHandler;
 use Iliich246\YicmsCommon\Fields\FieldTemplate;
 use Iliich246\YicmsCommon\Fields\FieldsInterface;
@@ -32,8 +34,11 @@ use Iliich246\YicmsCommon\Fields\FieldReferenceInterface;
  */
 class Pages extends ActiveRecord implements
     FieldsInterface,
-    FieldReferenceInterface
+    FieldReferenceInterface,
+    SortOrderInterface
 {
+    use SortOrderTrait;
+
     const SCENARIO_CREATE = 0;
     const SCENARIO_UPDATE = 1;
 
@@ -168,6 +173,9 @@ class Pages extends ActiveRecord implements
      */
     public function save($runValidation = true, $attributeNames = null)
     {
+        if ($this->scenario == self::SCENARIO_CREATE)
+            $this->pages_order = $this->maxOrder();
+
         if ($this->scenario == self::SCENARIO_UPDATE) return parent::save($runValidation, $attributeNames);
 
         if (!$this->standardFields) return parent::save($runValidation, $attributeNames);
@@ -249,5 +257,53 @@ class Pages extends ActiveRecord implements
     public function getFieldReference()
     {
         return $this->field_reference;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getOrderQuery()
+    {
+        return self::find();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function getOrderFieldName()
+    {
+        return 'pages_order';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getOrderValue()
+    {
+        return $this->pages_order;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setOrderValue($value)
+    {
+        $this->pages_order = $value;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function configToChangeOfOrder()
+    {
+        $this->scenario = self::SCENARIO_UPDATE;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getOrderAble()
+    {
+        return $this;
     }
 }

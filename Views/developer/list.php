@@ -1,9 +1,12 @@
 <?php
 
 use yii\helpers\Url;
+use Iliich246\YicmsPages\Assets\PageDevAsset;
 
 /* @var $this \yii\web\View */
 /* @var $pages \Iliich246\YicmsPages\Base\Pages[] */
+
+PageDevAsset::register($this);
 
 ?>
 <div class="col-sm-9 content">
@@ -14,32 +17,18 @@ use yii\helpers\Url;
         <div class="col-xs-12">
             <div class="row control-buttons">
                 <div class="col-xs-12">
-                    <a href="<?= Url::toRoute(['create']) ?>" class="btn btn-primary">
+                    <a href="<?= Url::toRoute(['create']) ?>"
+                       class="btn btn-primary create-page-button"
+                       data-home-url="<?= Url::base() ?>">
                         Create new page essence
                     </a>
                 </div>
             </div>
 
-            <div class="list-block">
-                <?php foreach($pages as $page): ?>
-                    <div class="row list-items">
-                        <div class="col-xs-10 list-title">
-                            <a href="<?= Url::toRoute(['update', 'id' => $page->id]) ?>">
-                                <p>
-                                    <?= $page->program_name ?>
-                                </p>
-                            </a>
-                        </div>
-                        <div class="col-xs-2 list-controls">
-                            <?php if ($page->editable): ?>
-                                <span class="glyphicon glyphicon-eye-open"></span>
-                            <?php else: ?>
-                                <span class="glyphicon glyphicon-eye-close"></span>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
+            <?= $this->render('/pjax/update-pages-list-container', [
+                'pages' => $pages
+            ]) ?>
+
         </div>
     </div>
 </div>

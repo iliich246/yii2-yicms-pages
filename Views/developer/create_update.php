@@ -5,8 +5,8 @@ use yii\helpers\Url;
 use yii\widgets\Pjax;
 use yii\bootstrap\ActiveForm;
 use Iliich246\YicmsPages\Base\Pages;
-use Iliich246\YicmsCommon\Widgets\FieldsDevInputWidget;
 use Iliich246\YicmsCommon\Fields\FieldTemplate;
+use Iliich246\YicmsCommon\Fields\FieldsDevModalWidget;
 
 /* @var $this \yii\web\View */
 /* @var $page \Iliich246\YicmsPages\Base\Pages */
@@ -129,7 +129,7 @@ use Iliich246\YicmsCommon\Fields\FieldTemplate;
         'fieldTemplatesSingle' => $fieldTemplatesSingle
     ]) ?>
 
-    <?= FieldsDevInputWidget::widget([
+    <?= FieldsDevModalWidget::widget([
         'devFieldGroup' => $devFieldGroup,
     ])
     ?>

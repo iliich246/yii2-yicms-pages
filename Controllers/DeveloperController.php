@@ -11,7 +11,7 @@ use yii\web\BadRequestHttpException;
 use Iliich246\YicmsCommon\Languages\Language;
 use Iliich246\YicmsCommon\Fields\FieldTemplate;
 use Iliich246\YicmsCommon\Fields\DevFieldsGroup;
-use Iliich246\YicmsCommon\Widgets\FieldsDevInputWidget;
+use Iliich246\YicmsCommon\Fields\FieldsDevModalWidget;
 use Iliich246\YicmsPages\Base\Pages;
 use Iliich246\YicmsPages\Base\PagesException;
 use Iliich246\YicmsPages\Base\PageDevTranslatesForm;
@@ -123,7 +123,7 @@ class DeveloperController extends Controller
                 //TODO: bootbox error
             }
 
-            return FieldsDevInputWidget::widget([
+            return FieldsDevModalWidget::widget([
                 'devFieldGroup' => $devFieldGroup,
                 'dataSaved' => true,
             ]);

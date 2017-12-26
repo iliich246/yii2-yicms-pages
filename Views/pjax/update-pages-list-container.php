@@ -10,7 +10,8 @@ use yii\helpers\Url;
 <?php Pjax::begin([
     'options' => [
         'id' => 'update-pages-list-container'
-    ]
+    ],
+    'linkSelector' => '.pj',
 ]) ?>
 <div class="list-block">
     <?php foreach($pages as $page): ?>

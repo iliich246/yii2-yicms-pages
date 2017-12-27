@@ -11,7 +11,7 @@ use yii\helpers\Url;
     'options' => [
         'id' => 'update-pages-list-container'
     ],
-    'linkSelector' => '.pj',
+    'linkSelector' => false,
 ]) ?>
 <div class="list-block">
     <?php foreach($pages as $page): ?>

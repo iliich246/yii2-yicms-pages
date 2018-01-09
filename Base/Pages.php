@@ -10,6 +10,9 @@ use Iliich246\YicmsCommon\Fields\FieldsHandler;
 use Iliich246\YicmsCommon\Fields\FieldTemplate;
 use Iliich246\YicmsCommon\Fields\FieldsInterface;
 use Iliich246\YicmsCommon\Fields\FieldReferenceInterface;
+use Iliich246\YicmsCommon\Files\FilesHandler;
+use Iliich246\YicmsCommon\Files\FilesInterface;
+use Iliich246\YicmsCommon\Files\FilesReferenceInterface;
 
 /**
  * Class Pages
@@ -35,6 +38,8 @@ use Iliich246\YicmsCommon\Fields\FieldReferenceInterface;
 class Pages extends ActiveRecord implements
     FieldsInterface,
     FieldReferenceInterface,
+    FilesInterface,
+    FilesReferenceInterface,
     SortOrderInterface
 {
     use SortOrderTrait;
@@ -42,8 +47,15 @@ class Pages extends ActiveRecord implements
     const SCENARIO_CREATE = 0;
     const SCENARIO_UPDATE = 1;
 
-    /** @var FieldsHandler instance of field handler object */
+    /**
+     * @var FieldsHandler instance of field handler object
+     */
     private $fieldHandler;
+    /**
+     * @var FilesHandler
+     */
+    private $fileHandler;
+
 
     /**
      * @var boolean if true standard field as title and seo field will be created
@@ -257,6 +269,41 @@ class Pages extends ActiveRecord implements
     public function getFieldReference()
     {
         return $this->field_reference;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getFileHandler()
+    {
+        if (!$this->fileHandler)
+            $this->fileHandler = new FilesHandler($this);
+
+        return $this->fileHandler;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getFileReference()
+    {
+        return $this->file_reference;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getFileTemplateReference()
+    {
+        return $this->file_template_reference;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getFileBlock($name)
+    {
+        return $this->getFileHandler()->getFileBlock($name);
     }
 
     /**

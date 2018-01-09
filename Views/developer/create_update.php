@@ -7,12 +7,15 @@ use yii\bootstrap\ActiveForm;
 use Iliich246\YicmsPages\Base\Pages;
 use Iliich246\YicmsCommon\Fields\FieldTemplate;
 use Iliich246\YicmsCommon\Fields\FieldsDevModalWidget;
+use Iliich246\YicmsCommon\Files\FilesDevModalWidget;
 
 /* @var $this \yii\web\View */
 /* @var $page \Iliich246\YicmsPages\Base\Pages */
 /* @var $devFieldGroup \Iliich246\YicmsCommon\Fields\DevFieldsGroup */
 /* @var $fieldTemplatesTranslatable FieldTemplate[] */
 /* @var $fieldTemplatesSingle FieldTemplate[] */
+/* @var $filesBlocks \Iliich246\YicmsCommon\Files\FilesBlock[] */
+/* @var $devFilesGroup \Iliich246\YicmsCommon\Files\DevFilesGroup */
 /* @var $success bool */
 
 \Iliich246\YicmsCommon\Assets\FieldsDevAsset::register($this);
@@ -133,3 +136,13 @@ use Iliich246\YicmsCommon\Fields\FieldsDevModalWidget;
         'devFieldGroup' => $devFieldGroup,
     ])
     ?>
+
+    <?= $this->render('@yicms-common/Views/pjax/update-files-list-container', [
+        'fileTemplateReference' => $page->getFileTemplateReference(),
+        'filesBlocks' => $filesBlocks,
+    ]) ?>
+
+    <?= FilesDevModalWidget::widget([
+        'devFilesGroup' => $devFilesGroup,
+        'action' => Url::toRoute(['/pages/dev/update', 'id' => $page->id])
+    ]) ?>

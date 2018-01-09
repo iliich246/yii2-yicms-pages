@@ -15,6 +15,9 @@ use Iliich246\YicmsCommon\Fields\FieldsDevModalWidget;
 use Iliich246\YicmsPages\Base\Pages;
 use Iliich246\YicmsPages\Base\PagesException;
 use Iliich246\YicmsPages\Base\PageDevTranslatesForm;
+use Iliich246\YicmsCommon\Files\FilesBlock;
+use Iliich246\YicmsCommon\Files\DevFilesGroup;
+use Iliich246\YicmsCommon\Files\FilesDevModalWidget;
 
 /**
  * Class DeveloperController
@@ -82,7 +85,8 @@ class DeveloperController extends Controller
     }
 
     /**
-     * @param $id *
+     * Updates page
+     * @param $id
      * @return string
      * @throws NotFoundHttpException
      */
@@ -129,6 +133,23 @@ class DeveloperController extends Controller
             ]);
         }
 
+        $devFilesGroup = new DevFilesGroup();
+        $devFilesGroup->setFilesTemplateReference($page->getFileTemplateReference());
+        $devFilesGroup->initialize(Yii::$app->request->post('_fileTemplateId'));
+
+        //try to load validate and save field via pjax
+        if ($devFilesGroup->load(Yii::$app->request->post()) && $devFilesGroup->validate()) {
+
+            if (!$devFilesGroup->save()) {
+                //TODO: bootbox error
+            }
+
+            return FilesDevModalWidget::widget([
+                'devFilesGroup' => $devFilesGroup,
+                'dataSaved' => true,
+            ]);
+        }
+
         $fieldTemplatesTranslatable = FieldTemplate::getListQuery($page->getFieldTemplateReference())
                                         ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE])
                                         ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
@@ -139,11 +160,17 @@ class DeveloperController extends Controller
                                         ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
                                         ->all();
 
+        $filesBlocks = FilesBlock::getListQuery($page->getFileTemplateReference())
+            ->orderBy([FilesBlock::getOrderFieldName() => SORT_ASC])
+            ->all();
+
         return $this->render('/developer/create_update', [
             'page' => $page,
             'devFieldGroup' => $devFieldGroup,
             'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
-            'fieldTemplatesSingle' => $fieldTemplatesSingle
+            'fieldTemplatesSingle' => $fieldTemplatesSingle,
+            'devFilesGroup' => $devFilesGroup,
+            'filesBlocks' => $filesBlocks,
         ]);
     }
 

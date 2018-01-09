@@ -161,8 +161,8 @@ class DeveloperController extends Controller
                                         ->all();
 
         $filesBlocks = FilesBlock::getListQuery($page->getFileTemplateReference())
-            ->orderBy([FilesBlock::getOrderFieldName() => SORT_ASC])
-            ->all();
+                                        ->orderBy([FilesBlock::getOrderFieldName() => SORT_ASC])
+                                        ->all();
 
         return $this->render('/developer/create_update', [
             'page' => $page,

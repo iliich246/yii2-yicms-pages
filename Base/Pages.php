@@ -10,9 +10,11 @@ use Iliich246\YicmsCommon\Fields\FieldsHandler;
 use Iliich246\YicmsCommon\Fields\FieldTemplate;
 use Iliich246\YicmsCommon\Fields\FieldsInterface;
 use Iliich246\YicmsCommon\Fields\FieldReferenceInterface;
+use Iliich246\YicmsCommon\Files\FilesBlock;
 use Iliich246\YicmsCommon\Files\FilesHandler;
 use Iliich246\YicmsCommon\Files\FilesInterface;
 use Iliich246\YicmsCommon\Files\FilesReferenceInterface;
+use Iliich246\YicmsCommon\Images\ImagesBlock;
 
 /**
  * Class Pages
@@ -177,6 +179,12 @@ class Pages extends ActiveRecord implements
         if ($this->scenario == self::SCENARIO_CREATE) {
             $this->field_template_reference = FieldTemplate::generateTemplateReference();
             $this->field_reference = $this->field_template_reference;
+
+            $this->file_template_reference = FilesBlock::generateTemplateReference();
+            $this->file_reference = $this->field_template_reference;
+
+            $this->image_template_reference = ImagesBlock::generateTemplateReference();
+            $this->image_reference = $this->image_template_reference;
         }
     }
 

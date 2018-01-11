@@ -12,12 +12,19 @@ use Iliich246\YicmsCommon\Languages\Language;
 use Iliich246\YicmsCommon\Fields\FieldTemplate;
 use Iliich246\YicmsCommon\Fields\DevFieldsGroup;
 use Iliich246\YicmsCommon\Fields\FieldsDevModalWidget;
-use Iliich246\YicmsPages\Base\Pages;
-use Iliich246\YicmsPages\Base\PagesException;
-use Iliich246\YicmsPages\Base\PageDevTranslatesForm;
 use Iliich246\YicmsCommon\Files\FilesBlock;
 use Iliich246\YicmsCommon\Files\DevFilesGroup;
 use Iliich246\YicmsCommon\Files\FilesDevModalWidget;
+use Iliich246\YicmsCommon\Images\ImagesBlock;
+use Iliich246\YicmsCommon\Images\DevImagesGroup;
+use Iliich246\YicmsCommon\Images\ImagesDevModalWidget;
+use Iliich246\YicmsCommon\Conditions\ConditionTemplate;
+use Iliich246\YicmsCommon\Conditions\DevConditionsGroup;
+use Iliich246\YicmsCommon\Conditions\ConditionsDevModalWidget;
+use Iliich246\YicmsPages\Base\Pages;
+use Iliich246\YicmsPages\Base\PagesException;
+use Iliich246\YicmsPages\Base\PageDevTranslatesForm;
+
 
 /**
  * Class DeveloperController
@@ -150,6 +157,40 @@ class DeveloperController extends Controller
             ]);
         }
 
+        $devImagesGroup = new DevImagesGroup();
+        $devImagesGroup->setImagesTemplateReference($page->getFileTemplateReference());
+        $devImagesGroup->initialize(Yii::$app->request->post('_imageTemplateId'));
+
+        //try to load validate and save image block via pjax
+        if ($devImagesGroup->load(Yii::$app->request->post()) && $devImagesGroup->validate()) {
+
+            if (!$devImagesGroup->save()) {
+                //TODO: bootbox error
+            }
+
+            return ImagesDevModalWidget::widget([
+                'devImagesGroup' => $devImagesGroup,
+                'dataSaved' => true,
+            ]);
+        }
+
+        $devConditionsGroup = new DevConditionsGroup();
+        $devConditionsGroup->setConditionsTemplateReference($page->getConditionTemplateReference());
+        $devConditionsGroup->initialize(Yii::$app->request->post('_conditionTemplateId'));
+
+        //try to load validate and save image block via pjax
+        if ($devConditionsGroup->load(Yii::$app->request->post()) && $devConditionsGroup->validate()) {
+
+            if (!$devConditionsGroup->save()) {
+                //TODO: bootbox error
+            }
+
+            return ConditionsDevModalWidget::widget([
+                'devConditionsGroup' => $devConditionsGroup,
+                'dataSaved' => true,
+            ]);
+        }
+
         $fieldTemplatesTranslatable = FieldTemplate::getListQuery($page->getFieldTemplateReference())
                                         ->andWhere(['language_type' => FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE])
                                         ->orderBy([FieldTemplate::getOrderFieldName() => SORT_ASC])
@@ -164,6 +205,14 @@ class DeveloperController extends Controller
                                         ->orderBy([FilesBlock::getOrderFieldName() => SORT_ASC])
                                         ->all();
 
+        $imagesBlocks = ImagesBlock::getListQuery($page->getFileTemplateReference())
+                                        ->orderBy([ImagesBlock::getOrderFieldName() => SORT_ASC])
+                                        ->all();
+
+        $conditionTemplates = ConditionTemplate::getListQuery($page->getConditionTemplateReference())
+                                        ->orderBy([ConditionTemplate::getOrderFieldName() => SORT_ASC])
+                                        ->all();
+
         return $this->render('/developer/create_update', [
             'page' => $page,
             'devFieldGroup' => $devFieldGroup,
@@ -171,6 +220,10 @@ class DeveloperController extends Controller
             'fieldTemplatesSingle' => $fieldTemplatesSingle,
             'devFilesGroup' => $devFilesGroup,
             'filesBlocks' => $filesBlocks,
+            'devImagesGroup' => $devImagesGroup,
+            'imagesBlocks' => $imagesBlocks,
+            'devConditionsGroup' => $devConditionsGroup,
+            'conditionTemplates' => $conditionTemplates
         ]);
     }
 

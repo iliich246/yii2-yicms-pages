@@ -8,17 +8,49 @@ use Iliich246\YicmsPages\Base\Pages;
 use Iliich246\YicmsCommon\Fields\FieldTemplate;
 use Iliich246\YicmsCommon\Fields\FieldsDevModalWidget;
 use Iliich246\YicmsCommon\Files\FilesDevModalWidget;
+use Iliich246\YicmsCommon\Images\ImagesDevModalWidget;
+use Iliich246\YicmsCommon\Conditions\ConditionsDevModalWidget;
 
-/* @var $this \yii\web\View */
-/* @var $page \Iliich246\YicmsPages\Base\Pages */
-/* @var $devFieldGroup \Iliich246\YicmsCommon\Fields\DevFieldsGroup */
-/* @var $fieldTemplatesTranslatable FieldTemplate[] */
-/* @var $fieldTemplatesSingle FieldTemplate[] */
-/* @var $filesBlocks \Iliich246\YicmsCommon\Files\FilesBlock[] */
-/* @var $devFilesGroup \Iliich246\YicmsCommon\Files\DevFilesGroup */
-/* @var $success bool */
+/** @var $this \yii\web\View */
+/** @var $page \Iliich246\YicmsPages\Base\Pages */
+/** @var $devFieldGroup \Iliich246\YicmsCommon\Fields\DevFieldsGroup */
+/** @var $fieldTemplatesTranslatable FieldTemplate[] */
+/** @var $fieldTemplatesSingle FieldTemplate[] */
+/** @var $filesBlocks \Iliich246\YicmsCommon\Files\FilesBlock[] */
+/** @var $devFilesGroup \Iliich246\YicmsCommon\Files\DevFilesGroup */
+/** @var $imagesBlocks \Iliich246\YicmsCommon\Images\ImagesBlock[] */
+/** @var $devImagesGroup \Iliich246\YicmsCommon\Images\DevImagesGroup */
+/** @var $devConditionsGroup Iliich246\YicmsCommon\Conditions\DevConditionsGroup */
+/** @var $conditionTemplates Iliich246\YicmsCommon\Conditions\ConditionTemplate[] */
+/** @var $success bool */
 
-\Iliich246\YicmsCommon\Assets\FieldsDevAsset::register($this);
+$js = <<<JS
+;(function() {
+    var pjaxContainer = $('#update-page-container');
+
+    $(pjaxContainer).on('pjax:success', function() {
+        $(".alert").hide().slideDown(500).fadeTo(500, 1);
+
+        window.setTimeout(function() {
+            $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                $(this).remove();
+            });
+        }, 3000);
+    });
+
+    $(pjaxContainer).on('pjax:error', function(xhr, textStatus) {
+        bootbox.alert({
+            size: 'large',
+            title: "There are some error on ajax request!",
+            message: textStatus.responseText,
+            className: 'bootbox-error'
+        });
+    });
+})();
+JS;
+
+$this->registerJs($js, $this::POS_READY);
+
 ?>
 
 <div class="col-sm-9 content">
@@ -144,5 +176,25 @@ use Iliich246\YicmsCommon\Files\FilesDevModalWidget;
 
     <?= FilesDevModalWidget::widget([
         'devFilesGroup' => $devFilesGroup,
+        'action' => Url::toRoute(['/pages/dev/update', 'id' => $page->id])
+    ]) ?>
+
+    <?= $this->render('@yicms-common/Views/pjax/update-images-list-container', [
+        'imageTemplateReference' => $page->getImageTemplateReference(),
+        'imagesBlocks' => $imagesBlocks,
+    ]) ?>
+
+    <?= ImagesDevModalWidget::widget([
+        'devImagesGroup' => $devImagesGroup,
+        'action' => Url::toRoute(['/pages/dev/update', 'id' => $page->id])
+    ]) ?>
+
+    <?= $this->render('@yicms-common/Views/pjax/update-conditions-list-container', [
+        'conditionTemplateReference' => $page->getConditionTemplateReference(),
+        'conditionsTemplates' => $conditionTemplates,
+    ]) ?>
+
+    <?= ConditionsDevModalWidget::widget([
+        'devConditionsGroup' => $devConditionsGroup,
         'action' => Url::toRoute(['/pages/dev/update', 'id' => $page->id])
     ]) ?>

@@ -2,6 +2,9 @@
 
 namespace Iliich246\YicmsPages\Base;
 
+use Iliich246\YicmsCommon\Fields\Field;
+use Iliich246\YicmsCommon\Files\File;
+use Iliich246\YicmsCommon\Images\Image;
 use Yii;
 use yii\db\ActiveRecord;
 use Iliich246\YicmsCommon\Base\SortOrderTrait;
@@ -291,6 +294,11 @@ class Pages extends ActiveRecord implements
      */
     public function getFieldTemplateReference()
     {
+        if (!$this->field_template_reference) {
+            $this->field_template_reference = FieldTemplate::generateTemplateReference();
+            $this->save(false);
+        }
+
         return $this->field_template_reference;
     }
 
@@ -299,6 +307,11 @@ class Pages extends ActiveRecord implements
      */
     public function getFieldReference()
     {
+        if (!$this->field_reference) {
+            $this->field_reference = Field::generateReference();
+            $this->save(false);
+        }
+
         return $this->field_reference;
     }
 
@@ -318,6 +331,11 @@ class Pages extends ActiveRecord implements
      */
     public function getFileReference()
     {
+        if (!$this->file_reference) {
+            $this->file_reference = File::generateReference();
+            $this->save(false);
+        }
+
         return $this->file_reference;
     }
 
@@ -326,6 +344,11 @@ class Pages extends ActiveRecord implements
      */
     public function getFileTemplateReference()
     {
+        if (!$this->file_template_reference) {
+            $this->file_template_reference = FilesBlock::generateTemplateReference();
+            $this->save(false);
+        }
+
         return $this->file_template_reference;
     }
 
@@ -361,6 +384,11 @@ class Pages extends ActiveRecord implements
      */
     public function getImageTemplateReference()
     {
+        if (!$this->image_template_reference) {
+            $this->image_template_reference = ImagesBlock::generateTemplateReference();
+            $this->save(false);
+        }
+
         return $this->image_template_reference;
     }
 
@@ -369,6 +397,11 @@ class Pages extends ActiveRecord implements
      */
     public function getImageReference()
     {
+        if (!$this->image_reference) {
+            $this->image_reference = Image::generateReference();
+            $this->save(false);
+        }
+
         return $this->image_reference;
     }
 

@@ -273,6 +273,22 @@ class Pages extends ActiveRecord implements
     /**
      * @inheritdoc
      */
+    public function delete()
+    {
+        //parent::delete();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isConstraints()
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getFieldHandler()
     {
         if (!$this->fieldHandler)

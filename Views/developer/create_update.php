@@ -145,6 +145,10 @@ $this->registerJs($js, $this::POS_READY);
                 </div>
             </div>
 
+            <?php if ($page->scenario == Pages::SCENARIO_UPDATE): ?>
+
+            <?php endif; ?>
+
             <div class="row control-buttons">
                 <div class="col-xs-12">
                     <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

@@ -8,6 +8,8 @@ use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;
+use Iliich246\YicmsCommon\Base\CommonHashForm;
+use Iliich246\YicmsCommon\Base\CommonException;
 use Iliich246\YicmsCommon\Languages\Language;
 use Iliich246\YicmsCommon\Fields\FieldTemplate;
 use Iliich246\YicmsCommon\Fields\DevFieldsGroup;
@@ -24,7 +26,6 @@ use Iliich246\YicmsCommon\Conditions\ConditionsDevModalWidget;
 use Iliich246\YicmsPages\Base\Pages;
 use Iliich246\YicmsPages\Base\PagesException;
 use Iliich246\YicmsPages\Base\PageDevTranslatesForm;
-
 
 /**
  * Class DeveloperController
@@ -268,9 +269,19 @@ class DeveloperController extends Controller
         ]);
     }
 
-    public function actionDeletePage()
+    public function actionDeletePage($id, $deletePass = false)
     {
-        //TODO: implement page delete action
+        /** @var Pages $page */
+        $page = Pages::findOne($id);
+
+        if (!$page) throw new NotFoundHttpException('Wrong page id');
+
+        if ($page->isConstraints())
+            if (!Yii::$app->security->validatePassword($deletePass, CommonHashForm::DEV_HASH))
+                throw new CommonException('Wrong dev password');
+
+        $page->delete();
+
     }
 
     /**

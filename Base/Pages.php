@@ -275,15 +275,88 @@ class Pages extends ActiveRecord implements
      */
     public function delete()
     {
-        //parent::delete();
+        /** @var FieldTemplate[] $fieldTemplates */
+        $fieldTemplates = FieldTemplate::find()->where([
+            'field_template_reference' => $this->getFieldTemplateReference(),
+        ])->all();
+
+        foreach($fieldTemplates as $fieldTemplate)
+            $fieldTemplate->delete();
+
+        /** @var FilesBlock[] $filesBlocks */
+        $filesBlocks = FilesBlock::find()->where([
+            'file_template_reference' => $this->getFileTemplateReference(),
+        ])->all();
+
+        foreach($filesBlocks as $fileBlock)
+            $fileBlock->delete();
+
+        /** @var ImagesBlock[] $imageBlocks */
+        $imageBlocks = ImagesBlock::find()->where([
+            'image_template_reference' => $this->getImageTemplateReference(),
+        ])->all();
+
+        foreach($imageBlocks as $imageBlock)
+            $imageBlock->delete();
+
+        /** @var ConditionTemplate[] $conditionTemplates */
+        $conditionTemplates = ConditionTemplate::find()->where([
+            'condition_template_reference' => $this->getConditionTemplateReference(),
+        ])->all();
+
+        foreach($conditionTemplates as $conditionTemplate)
+            $conditionTemplate->delete();
+
+        /** @var PageNamesTranslateDb[] $pageNames */
+        $pageNames = PageNamesTranslateDb::find()->where([
+            'page_id' => $this->id,
+        ])->all();
+
+        foreach($pageNames as $pageName)
+            $pageName->delete();
+
+        return parent::delete();
     }
 
     /**
+     * Return true if page has any constraints
      * @return bool
      */
     public function isConstraints()
     {
-        return true;
+        /** @var FieldTemplate[] $fieldTemplates */
+        $fieldTemplates = FieldTemplate::find()->where([
+            'field_template_reference' => $this->getFieldTemplateReference(),
+        ])->all();
+
+        foreach($fieldTemplates as $fieldTemplate)
+            if ($fieldTemplate->isConstraints()) return true;
+
+        /** @var FilesBlock[] $filesBlocks */
+        $filesBlocks = FilesBlock::find()->where([
+            'file_template_reference' => $this->getFileTemplateReference(),
+        ])->all();
+
+        foreach($filesBlocks as $fileBlock)
+            if ($fileBlock->isConstraints()) return true;
+
+        /** @var ImagesBlock[] $imageBlocks */
+        $imageBlocks = ImagesBlock::find()->where([
+            'image_template_reference' => $this->getImageTemplateReference(),
+        ])->all();
+
+        foreach($imageBlocks as $imageBlock)
+            if ($imageBlock->isConstraints()) return true;
+
+        /** @var ConditionTemplate[] $conditionTemplates */
+        $conditionTemplates = ConditionTemplate::find()->where([
+            'condition_template_reference' => $this->getConditionTemplateReference(),
+        ])->all();
+
+        foreach($conditionTemplates as $conditionTemplate)
+            if ($conditionTemplate->isConstraints()) return true;
+
+        return false;
     }
 
     /**

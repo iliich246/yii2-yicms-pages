@@ -269,6 +269,15 @@ class DeveloperController extends Controller
         ]);
     }
 
+    /**
+     * Action for delete page
+     * @param $id
+     * @param bool|false $deletePass
+     * @return \yii\web\Response
+     * @throws CommonException
+     * @throws NotFoundHttpException
+     * @throws PagesException
+     */
     public function actionDeletePage($id, $deletePass = false)
     {
         /** @var Pages $page */
@@ -278,9 +287,12 @@ class DeveloperController extends Controller
 
         if ($page->isConstraints())
             if (!Yii::$app->security->validatePassword($deletePass, CommonHashForm::DEV_HASH))
-                throw new CommonException('Wrong dev password');
+                throw new PagesException('Wrong dev password');
 
-        $page->delete();
+        if ($page->delete())
+            return $this->redirect(Url::toRoute(['list']));
+
+        throw new PagesException('Delete error');
 
     }
 

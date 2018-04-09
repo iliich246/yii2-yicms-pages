@@ -26,7 +26,8 @@ use Iliich246\YicmsCommon\Conditions\ConditionsDevModalWidget;
 
 $js = <<<JS
 ;(function() {
-    var pjaxContainer = $('#update-page-container');
+    var pjaxContainer   = $('#update-page-container');
+    var pjaxContainerId = '#update-page-container';
 
     $(pjaxContainer).on('pjax:success', function() {
         $(".alert").hide().slideDown(500).fadeTo(500, 1);
@@ -45,6 +46,64 @@ $js = <<<JS
             message: textStatus.responseText,
             className: 'bootbox-error'
         });
+    });
+
+    $('#page-delete').on('click',  function() {
+        var button = this;
+
+        if (!$(button).is('[data-page-id]')) return;
+
+        var pageId             = $(button).data('pageId');
+        var pageHasConstraints = $(button).data('pageHasConstraints');
+        var homeUrl            = $(button).data('homeUrl');
+        var deleteUrl          = homeUrl + '/pages/dev/delete-page';
+
+        if (!($(this).hasClass('page-confirm-state'))) {
+            $(this).before('<span>Are you sure? </span>');
+            $(this).text('Yes, I`am sure!');
+            $(this).addClass('page-confirm-state');
+        } else {
+            if (!pageHasConstraints) {
+                $.pjax({
+                    url: deleteUrl + '?id=' + pageId,
+                    container: pjaxContainerId,
+                    scrollTo: false,
+                    push: false,
+                    type: "POST",
+                    timeout: 2500
+                 });
+            } else {
+                var deleteButtonRow = $('.delete-button-row');
+
+                var template = _.template($('#delete-with-pass-template').html());
+                $(deleteButtonRow).empty();
+                $(deleteButtonRow).append(template);
+
+                var passwordInput = $('#page-delete-password-input');
+                var buttonDelete  = $('#button-delete-with-pass');
+
+                $(buttonDelete).on('click', function() {
+                    $.pjax({
+                        url: deleteUrl + '?id=' + pageId +
+                                         '&deletePass=' + $(passwordInput).val(),
+                        container: pjaxContainerId,
+                        scrollTo: false,
+                        push: false,
+                        type: "POST",
+                        timeout: 2500
+                    });
+                });
+
+                $(pjaxContainer).on('pjax:error', function(event) {
+                    bootbox.alert({
+                        size: 'large',
+                        title: "Wrong dev password",
+                        message: "Page has not deleted",
+                        className: 'bootbox-error'
+                    });
+                });
+            }
+        }
     });
 })();
 JS;
@@ -146,7 +205,40 @@ $this->registerJs($js, $this::POS_READY);
             </div>
 
             <?php if ($page->scenario == Pages::SCENARIO_UPDATE): ?>
-
+                <div class="row delete-button-row">
+                    <div class="col-xs-12">
+                        <br>
+                        <button type="button"
+                                class="btn btn-danger"
+                                data-home-url="<?= \yii\helpers\Url::base() ?>"
+                                data-page-id="<?= $page->id ?>"
+                                data-page-has-constraints="<?= (int)$page->isConstraints() ?>"
+                                id="page-delete">
+                            Delete page
+                        </button>
+                    </div>
+                </div>
+                <script type="text/template" id="delete-with-pass-template">
+                    <div class="col-xs-12">
+                        <br>
+                        <label for="page-delete-password-input">
+                            Page has constraints. Enter dev password for delete condition value
+                        </label>
+                        <input type="password"
+                               id="page-delete-password-input"
+                               class="form-control" name=""
+                               value=""
+                               aria-required="true"
+                               aria-invalid="false">
+                        <br>
+                        <button type="button"
+                                class="btn btn-danger"
+                                id="button-delete-with-pass"
+                        >
+                            Yes, i am absolutely seriously!!!
+                        </button>
+                    </div>
+                </script>
             <?php endif; ?>
 
             <div class="row control-buttons">

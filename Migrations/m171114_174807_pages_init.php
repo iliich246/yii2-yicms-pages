@@ -16,30 +16,30 @@ class m171114_174807_pages_init extends Migration
          * pages table
          */
         $this->createTable('{{%pages}}', [
-            'id' => $this->primaryKey(),
-            'program_name' => $this->string(50),
-            'editable' => $this->boolean(),
-            'visible' => $this->boolean(),
-            'system_route' => $this->string(),
-            'ruled_route' => $this->string(),
-            'pages_order' => $this->integer(),
-            'field_template_reference' => $this->string(),
-            'field_reference' => $this->string(),
-            'file_template_reference' => $this->string(),
-            'file_reference' => $this->string(),
-            'image_template_reference' => $this->string(),
-            'image_reference' => $this->string(),
+            'id'                           => $this->primaryKey(),
+            'program_name'                 => $this->string(50),
+            'editable'                     => $this->boolean(),
+            'visible'                      => $this->boolean(),
+            'system_route'                 => $this->string(),
+            'ruled_route'                  => $this->string(),
+            'pages_order'                  => $this->integer(),
+            'field_template_reference'     => $this->string(),
+            'field_reference'              => $this->string(),
+            'file_template_reference'      => $this->string(),
+            'file_reference'               => $this->string(),
+            'image_template_reference'     => $this->string(),
+            'image_reference'              => $this->string(),
             'condition_template_reference' => $this->string(),
-            'condition_reference' => $this->string(),
+            'condition_reference'          => $this->string(),
         ]);
 
         /**
          * pages_config table
          */
         $this->createTable('{{%pages_config}}', [
-            'id' => $this->primaryKey(),
-            'imagesPatch' => $this->string(),
-            'filesPatch' => $this->string(),
+            'id'                      => $this->primaryKey(),
+            'imagesPatch'             => $this->string(),
+            'filesPatch'              => $this->string(),
             'thumbNailsDirectoryName' => $this->string(),
         ]);
 
@@ -60,11 +60,11 @@ class m171114_174807_pages_init extends Migration
          * pages_names_translates table
          */
         $this->createTable('{{%pages_names_translates}}', [
-            'id' => $this->primaryKey(),
-            'page_id' => $this->integer(),
+            'id'                 => $this->primaryKey(),
+            'page_id'            => $this->integer(),
             'common_language_id' => $this->integer(),
-            'name' => $this->string(),
-            'description' => $this->string(),
+            'name'               => $this->string(),
+            'description'        => $this->string(),
         ]);
 
         $this->addForeignKey('pages_names_translates-to-pages',

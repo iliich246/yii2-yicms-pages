@@ -14,7 +14,35 @@ use Iliich246\YicmsCommon\Widgets\SimpleTabsTranslatesWidget;
 /** @var $page Pages */
 /** @var $translateModels PageDevTranslatesForm[] */
 
-$this->title = "Translations of page names"
+$this->title = "Translations of page names";
+
+$js = <<<JS
+;(function() {
+    var pjaxContainer   = $('#edit-page-names-container');
+    var pjaxContainerId = '#edit-page-names-container';
+
+    $(pjaxContainer).on('pjax:success', function() {
+        $(".alert").hide().slideDown(500).fadeTo(500, 1);
+
+        window.setTimeout(function() {
+            $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                $(this).remove();
+            });
+        }, 3000);
+    });
+
+    $(pjaxContainer).on('pjax:error', function(xhr, textStatus) {
+        bootbox.alert({
+            size: 'large',
+            title: "There are some error on ajax request!",
+            message: textStatus.responseText,
+            className: 'bootbox-error'
+        });
+    });
+})();
+JS;
+
+$this->registerJs($js, $this::POS_READY);
 
 ?>
 <div class="col-sm-9 content">
@@ -39,7 +67,11 @@ $this->title = "Translations of page names"
                 <h3>Pages names form</h3>
                 <h4>Here are edited names of pages that admin see in the admin panel</h4>
             </div>
-            <?php $pjax = Pjax::begin() ?>
+            <?php $pjax = Pjax::begin([
+                'options' => [
+                    'id' => 'edit-page-names-container',
+                ]
+            ]) ?>
             <?php $form = ActiveForm::begin([
                 'id' => 'edit-page-names-form',
                 'options' => [
@@ -47,6 +79,13 @@ $this->title = "Translations of page names"
                 ],
             ]);
             ?>
+
+            <?php if (isset($success) && $success): ?>
+                <div class="alert alert-success alert-dismissible fade in" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+                    <strong>Success!</strong> Page data updated.
+                </div>
+            <?php endif; ?>
 
             <?= SimpleTabsTranslatesWidget::widget([
                 'form' => $form,

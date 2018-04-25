@@ -261,6 +261,12 @@ class DeveloperController extends Controller
             foreach($translateModels as $key=>$translateModel) {
                 $translateModel->save();
             }
+
+            return $this->render('/developer/page_translates', [
+                'page'            => $page,
+                'translateModels' => $translateModels,
+                'success'         => true,
+            ]);
         }
 
         return $this->render('/developer/page_translates', [

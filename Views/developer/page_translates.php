@@ -10,9 +10,9 @@ use Iliich246\YicmsCommon\Widgets\SimpleTabsTranslatesWidget;
 
 //use app\modules\common\widgets\TabsTranslatesWidget;
 
-/* @var $this \yii\web\View */
-/* @var $page Pages */
-/* @var $translateModels PageDevTranslatesForm[] */
+/** @var $this \yii\web\View */
+/** @var $page Pages */
+/** @var $translateModels PageDevTranslatesForm[] */
 
 $this->title = "Translations of page names"
 

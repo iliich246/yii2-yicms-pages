@@ -64,27 +64,15 @@ class Pages extends ActiveRecord implements
     const SCENARIO_CREATE = 0;
     const SCENARIO_UPDATE = 1;
 
-    /**
-     * @var FieldsHandler instance of field handler object
-     */
+    /** @var FieldsHandler instance of field handler object */
     private $fieldHandler;
-    /**
-     * @var FilesHandler
-     */
+    /** @var FilesHandler instance of file handler object*/
     private $fileHandler;
-    /**
-     * @var ImagesHandler
-     */
+    /** @var ImagesHandler instance of image handler object*/
     private $imageHandler;
-    /**
-     * @var ConditionsHandler
-     */
+    /** @var ConditionsHandler instance of condition handler object*/
     private $conditionHandler;
-
-
-    /**
-     * @var boolean if true standard field as title and seo field will be created
-     */
+    /** @var boolean if true standard field as title and seo field will be created */
     public $standardFields = true;
 
     /**
@@ -111,11 +99,11 @@ class Pages extends ActiveRecord implements
     public function attributeLabels()
     {
         return [
-            'program_name' => 'Program name',
+            'program_name'   => 'Program name',
             'standardFields' => 'Create standard fields of page(seo)',
-            'editable' => 'Editable',
-            'visible' => 'Visible',
-            'system_route' => 'System route'
+            'editable'       => 'Editable',
+            'visible'        => 'Visible',
+            'system_route'   => 'System route'
         ];
     }
 
@@ -127,6 +115,7 @@ class Pages extends ActiveRecord implements
      */
     public static function getByName($programName)
     {
+        //TODO: makes buffer of pages
         /** @var self $page */
         $page = self::find()
             ->where(['program_name' => $programName])
@@ -134,7 +123,7 @@ class Pages extends ActiveRecord implements
 
         if ($page) return $page;
 
-        Yii::error("Сan not find field with name " . $programName, __METHOD__);
+        Yii::error("Сan not find page with name " . $programName, __METHOD__);
 
         if (defined('YICMS_STRICT')) {
             throw new PagesException('Сan not find page with name ' . $programName);
@@ -227,42 +216,39 @@ class Pages extends ActiveRecord implements
         if (!$this->standardFields) return parent::save($runValidation, $attributeNames);
 
         //create standard seo fields
-        $fieldTemplate = new FieldTemplate();
+        $fieldTemplate                           = new FieldTemplate();
         $fieldTemplate->field_template_reference = $this->field_template_reference;
-        $fieldTemplate->scenario = FieldTemplate::SCENARIO_CREATE;
-        $fieldTemplate->program_name = 'title';
-        $fieldTemplate->type = FieldTemplate::TYPE_INPUT;
-        $fieldTemplate->language_type = FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE;
-        $fieldTemplate->visible = true;
-        $fieldTemplate->editable = true;
-        $fieldTemplate->is_main = true;
-        $fieldTemplate->field_order = 1;
+        $fieldTemplate->scenario                 = FieldTemplate::SCENARIO_CREATE;
+        $fieldTemplate->program_name             = 'title';
+        $fieldTemplate->type                     = FieldTemplate::TYPE_INPUT;
+        $fieldTemplate->language_type            = FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE;
+        $fieldTemplate->visible                  = true;
+        $fieldTemplate->editable                 = true;
+        $fieldTemplate->field_order              = 1;
 
         $fieldTemplate->save(false);
 
-        $fieldTemplate = new FieldTemplate();
+        $fieldTemplate                           = new FieldTemplate();
         $fieldTemplate->field_template_reference = $this->field_template_reference;
-        $fieldTemplate->scenario = FieldTemplate::SCENARIO_CREATE;
-        $fieldTemplate->program_name = 'meta_description';
-        $fieldTemplate->type = FieldTemplate::TYPE_TEXT;
-        $fieldTemplate->language_type = FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE;
-        $fieldTemplate->visible = true;
-        $fieldTemplate->editable = true;
-        $fieldTemplate->is_main = false;
-        $fieldTemplate->field_order = 2;
+        $fieldTemplate->scenario                 = FieldTemplate::SCENARIO_CREATE;
+        $fieldTemplate->program_name             = 'meta_description';
+        $fieldTemplate->type                     = FieldTemplate::TYPE_TEXT;
+        $fieldTemplate->language_type            = FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE;
+        $fieldTemplate->visible                  = true;
+        $fieldTemplate->editable                 = true;
+        $fieldTemplate->field_order              = 2;
 
         $fieldTemplate->save(false);
 
-        $fieldTemplate = new FieldTemplate();
+        $fieldTemplate                           = new FieldTemplate();
         $fieldTemplate->field_template_reference = $this->field_template_reference;
-        $fieldTemplate->scenario = FieldTemplate::SCENARIO_CREATE;
-        $fieldTemplate->program_name = 'meta_keywords';
-        $fieldTemplate->type = FieldTemplate::TYPE_TEXT;
-        $fieldTemplate->language_type = FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE;
-        $fieldTemplate->visible = true;
-        $fieldTemplate->editable = true;
-        $fieldTemplate->is_main = false;
-        $fieldTemplate->field_order = 3;
+        $fieldTemplate->scenario                 = FieldTemplate::SCENARIO_CREATE;
+        $fieldTemplate->program_name             = 'meta_keywords';
+        $fieldTemplate->type                     = FieldTemplate::TYPE_TEXT;
+        $fieldTemplate->language_type            = FieldTemplate::LANGUAGE_TYPE_TRANSLATABLE;
+        $fieldTemplate->visible                  = true;
+        $fieldTemplate->editable                 = true;
+        $fieldTemplate->field_order              = 3;
 
         $fieldTemplate->save(false);
         //TODO: makes create translates for standard fields

@@ -222,7 +222,7 @@ $this->registerJs($js, $this::POS_READY);
                     <div class="col-xs-12">
                         <br>
                         <label for="page-delete-password-input">
-                            Page has constraints. Enter dev password for delete condition value
+                            Page has constraints. Enter dev password for delete page
                         </label>
                         <input type="password"
                                id="page-delete-password-input"

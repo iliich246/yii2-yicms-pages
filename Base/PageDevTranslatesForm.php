@@ -13,17 +13,11 @@ use Iliich246\YicmsCommon\Base\AbstractTranslateForm;
  */
 class PageDevTranslatesForm extends AbstractTranslateForm
 {
-    /**
-     * @var string name of page in current model language
-     */
+    /** @var string name of page in current model language */
     public $name;
-    /**
-     * @var string description of page on current model language
-     */
+    /** @var string description of page on current model language */
     public $description;
-    /**
-     * @var Pages page db associated with this model
-     */
+    /** @var Pages page db associated with this model */
     private $page;
 
     /**
@@ -32,7 +26,7 @@ class PageDevTranslatesForm extends AbstractTranslateForm
     public function attributeLabels()
     {
         return [
-            'name' => 'Page name on language "' . $this->language->name . '"',
+            'name'        => 'Page name on language "' . $this->language->name . '"',
             'description' => 'Description of page on language "' . $this->language->name . '"',
         ];
     }
@@ -80,7 +74,7 @@ class PageDevTranslatesForm extends AbstractTranslateForm
      */
     public function save()
     {
-        $this->currentTranslateDb->name = $this->name;
+        $this->currentTranslateDb->name        = $this->name;
         $this->currentTranslateDb->description = $this->description;
 
         return $this->currentTranslateDb->save();
@@ -96,7 +90,7 @@ class PageDevTranslatesForm extends AbstractTranslateForm
         $this->currentTranslateDb = PageNamesTranslateDb::find()
             ->where([
                 'common_language_id' => $this->language->id,
-                'page_id' => $this->page->id,
+                'page_id'            => $this->page->id,
             ])
             ->one();
 

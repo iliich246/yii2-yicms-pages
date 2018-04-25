@@ -215,16 +215,16 @@ class DeveloperController extends Controller
                                         ->all();
 
         return $this->render('/developer/create_update', [
-            'page' => $page,
-            'devFieldGroup' => $devFieldGroup,
+            'page'                       => $page,
+            'devFieldGroup'              => $devFieldGroup,
             'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
-            'fieldTemplatesSingle' => $fieldTemplatesSingle,
-            'devFilesGroup' => $devFilesGroup,
-            'filesBlocks' => $filesBlocks,
-            'devImagesGroup' => $devImagesGroup,
-            'imagesBlocks' => $imagesBlocks,
-            'devConditionsGroup' => $devConditionsGroup,
-            'conditionTemplates' => $conditionTemplates
+            'fieldTemplatesSingle'       => $fieldTemplatesSingle,
+            'devFilesGroup'              => $devFilesGroup,
+            'filesBlocks'                => $filesBlocks,
+            'devImagesGroup'             => $devImagesGroup,
+            'imagesBlocks'               => $imagesBlocks,
+            'devConditionsGroup'         => $devConditionsGroup,
+            'conditionTemplates'         => $conditionTemplates
         ]);
     }
 
@@ -264,7 +264,7 @@ class DeveloperController extends Controller
         }
 
         return $this->render('/developer/page_translates', [
-            'page' => $page,
+            'page'            => $page,
             'translateModels' => $translateModels,
         ]);
     }

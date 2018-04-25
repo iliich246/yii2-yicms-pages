@@ -1,8 +1,8 @@
 ;(function() {
     var createPageButton = $('.create-page-button');
-    var homeUrl = $(createPageButton).data('homeUrl');
-    var pageUpUrl = homeUrl + '/pages/dev/page-up-order';
-    var pageDownUrl = homeUrl + '/pages/dev/page-down-order';
+    var homeUrl          = $(createPageButton).data('homeUrl');
+    var pageUpUrl        = homeUrl + '/pages/dev/page-up-order';
+    var pageDownUrl      = homeUrl + '/pages/dev/page-down-order';
 
     var pjaxContainer = $('#update-pages-list-container');
 

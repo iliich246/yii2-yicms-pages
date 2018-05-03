@@ -21,6 +21,7 @@ use Iliich246\YicmsCommon\Images\ImagesBlock;
 use Iliich246\YicmsCommon\Images\ImagesHandler;
 use Iliich246\YicmsCommon\Images\ImagesInterface;
 use Iliich246\YicmsCommon\Images\ImagesReferenceInterface;
+use Iliich246\YicmsCommon\Conditions\Condition;
 use Iliich246\YicmsCommon\Conditions\ConditionTemplate;
 use Iliich246\YicmsCommon\Conditions\ConditionsHandler;
 use Iliich246\YicmsCommon\Conditions\ConditionsInterface;
@@ -504,6 +505,11 @@ class Pages extends ActiveRecord implements
      */
     public function getConditionTemplateReference()
     {
+        if (!$this->condition_template_reference) {
+            $this->condition_template_reference = ConditionTemplate::generateTemplateReference();
+            $this->save(false);
+        }
+
         return $this->condition_template_reference;
     }
 
@@ -512,6 +518,11 @@ class Pages extends ActiveRecord implements
      */
     public function getConditionReference()
     {
+        if (!$this->condition_reference) {
+            $this->image_reference = Condition::generateReference();
+            $this->save(false);
+        }
+
         return $this->condition_reference;
     }
 

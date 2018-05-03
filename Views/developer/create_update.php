@@ -255,9 +255,9 @@ $this->registerJs($js, $this::POS_READY);
     <?php if ($page->scenario == Pages::SCENARIO_CREATE): return; endif;?>
 
     <?= $this->render('@yicms-common/views/pjax/update-fields-list-container', [
-        'fieldTemplateReference' => $page->getFieldTemplateReference(),
+        'fieldTemplateReference'     => $page->getFieldTemplateReference(),
         'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
-        'fieldTemplatesSingle' => $fieldTemplatesSingle
+        'fieldTemplatesSingle'       => $fieldTemplatesSingle
     ]) ?>
 
     <?= FieldsDevModalWidget::widget([
@@ -267,30 +267,31 @@ $this->registerJs($js, $this::POS_READY);
 
     <?= $this->render('@yicms-common/Views/pjax/update-files-list-container', [
         'fileTemplateReference' => $page->getFileTemplateReference(),
-        'filesBlocks' => $filesBlocks,
+        'filesBlocks'           => $filesBlocks,
     ]) ?>
 
     <?= FilesDevModalWidget::widget([
         'devFilesGroup' => $devFilesGroup,
-        'action' => Url::toRoute(['/pages/dev/update', 'id' => $page->id])
+        'action'        => Url::toRoute(['/pages/dev/update', 'id' => $page->id])
     ]) ?>
 
     <?= $this->render('@yicms-common/Views/pjax/update-images-list-container', [
         'imageTemplateReference' => $page->getImageTemplateReference(),
-        'imagesBlocks' => $imagesBlocks,
+        'imagesBlocks'           => $imagesBlocks,
     ]) ?>
 
     <?= ImagesDevModalWidget::widget([
         'devImagesGroup' => $devImagesGroup,
-        'action' => Url::toRoute(['/pages/dev/update', 'id' => $page->id])
+        'action'         => Url::toRoute(['/pages/dev/update', 'id' => $page->id])
     ]) ?>
 
     <?= $this->render('@yicms-common/Views/pjax/update-conditions-list-container', [
         'conditionTemplateReference' => $page->getConditionTemplateReference(),
-        'conditionsTemplates' => $conditionTemplates,
+        'conditionsTemplates'        => $conditionTemplates,
     ]) ?>
 
     <?= ConditionsDevModalWidget::widget([
         'devConditionsGroup' => $devConditionsGroup,
-        'action' => Url::toRoute(['/pages/dev/update', 'id' => $page->id])
+        'action'             => Url::toRoute(['/pages/dev/update', 'id' => $page->id])
     ]) ?>
+</div>

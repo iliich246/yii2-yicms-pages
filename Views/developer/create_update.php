@@ -73,14 +73,14 @@ $js = <<<JS
                     timeout: 2500
                  });
             } else {
-                var deleteButtonRow = $('.delete-button-row');
+                var deleteButtonRow = $('.delete-button-row-page');
 
-                var template = _.template($('#delete-with-pass-template').html());
+                var template = _.template($('#delete-with-pass-template-page').html());
                 $(deleteButtonRow).empty();
                 $(deleteButtonRow).append(template);
 
                 var passwordInput = $('#page-delete-password-input');
-                var buttonDelete  = $('#button-delete-with-pass');
+                var buttonDelete  = $('#button-delete-with-pass-page');
 
                 $(buttonDelete).on('click', function() {
                     $.pjax({
@@ -205,7 +205,7 @@ $this->registerJs($js, $this::POS_READY);
             </div>
 
             <?php if ($page->scenario == Pages::SCENARIO_UPDATE): ?>
-                <div class="row delete-button-row">
+                <div class="row delete-button-row-page">
                     <div class="col-xs-12">
                         <br>
                         <button type="button"
@@ -218,7 +218,7 @@ $this->registerJs($js, $this::POS_READY);
                         </button>
                     </div>
                 </div>
-                <script type="text/template" id="delete-with-pass-template">
+                <script type="text/template" id="delete-with-pass-template-page">
                     <div class="col-xs-12">
                         <br>
                         <label for="page-delete-password-input">
@@ -233,7 +233,7 @@ $this->registerJs($js, $this::POS_READY);
                         <br>
                         <button type="button"
                                 class="btn btn-danger"
-                                id="button-delete-with-pass"
+                                id="button-delete-with-pass-page"
                         >
                             Yes, i am absolutely seriously!!!
                         </button>

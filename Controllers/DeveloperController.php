@@ -159,7 +159,7 @@ class DeveloperController extends Controller
         }
 
         $devImagesGroup = new DevImagesGroup();
-        $devImagesGroup->setImagesTemplateReference($page->getFileTemplateReference());
+        $devImagesGroup->setImagesTemplateReference($page->getImageTemplateReference());
         $devImagesGroup->initialize(Yii::$app->request->post('_imageTemplateId'));
 
         //try to load validate and save image block via pjax
@@ -206,7 +206,7 @@ class DeveloperController extends Controller
                                         ->orderBy([FilesBlock::getOrderFieldName() => SORT_ASC])
                                         ->all();
 
-        $imagesBlocks = ImagesBlock::getListQuery($page->getFileTemplateReference())
+        $imagesBlocks = ImagesBlock::getListQuery($page->getImageTemplateReference())
                                         ->orderBy([ImagesBlock::getOrderFieldName() => SORT_ASC])
                                         ->all();
 

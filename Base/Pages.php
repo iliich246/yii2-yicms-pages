@@ -5,6 +5,7 @@ namespace Iliich246\YicmsPages\Base;
 use Yii;
 use yii\db\ActiveRecord;
 use Iliich246\YicmsCommon\Base\SortOrderTrait;
+use Iliich246\YicmsCommon\Base\FictiveInterface;
 use Iliich246\YicmsCommon\Base\SortOrderInterface;
 use Iliich246\YicmsCommon\Fields\Field;
 use Iliich246\YicmsCommon\Fields\FieldsHandler;
@@ -26,7 +27,6 @@ use Iliich246\YicmsCommon\Conditions\ConditionTemplate;
 use Iliich246\YicmsCommon\Conditions\ConditionsHandler;
 use Iliich246\YicmsCommon\Conditions\ConditionsInterface;
 use Iliich246\YicmsCommon\Conditions\ConditionsReferenceInterface;
-
 
 /**
  * Class Pages
@@ -58,6 +58,7 @@ class Pages extends ActiveRecord implements
     ImagesReferenceInterface,
     ConditionsReferenceInterface,
     ConditionsInterface,
+    FictiveInterface,
     SortOrderInterface
 {
     use SortOrderTrait;
@@ -572,5 +573,29 @@ class Pages extends ActiveRecord implements
     public function getOrderAble()
     {
         return $this;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setFictive()
+    {
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function clearFictive()
+    {
+        return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isFictive()
+    {
+        return false;
     }
 }

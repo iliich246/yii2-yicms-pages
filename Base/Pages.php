@@ -7,6 +7,8 @@ use yii\db\ActiveRecord;
 use Iliich246\YicmsCommon\Base\SortOrderTrait;
 use Iliich246\YicmsCommon\Base\FictiveInterface;
 use Iliich246\YicmsCommon\Base\SortOrderInterface;
+use Iliich246\YicmsCommon\Languages\Language;
+use Iliich246\YicmsCommon\Languages\LanguagesDb;
 use Iliich246\YicmsCommon\Fields\Field;
 use Iliich246\YicmsCommon\Fields\FieldsHandler;
 use Iliich246\YicmsCommon\Fields\FieldTemplate;
@@ -76,6 +78,8 @@ class Pages extends ActiveRecord implements
     private $conditionHandler;
     /** @var boolean if true standard field as title and seo field will be created */
     public $standardFields = true;
+    /** @var PageNamesTranslateDb[] buffer for language */
+    private $pageNameTranslations;
 
     /**
      * @param array $config
@@ -345,6 +349,58 @@ class Pages extends ActiveRecord implements
             if ($conditionTemplate->isConstraints()) return true;
 
         return false;
+    }
+
+    /**
+     * Returns name of page
+     * @param LanguagesDb|null $language
+     * @return string
+     * @throws \Iliich246\YicmsCommon\Base\CommonException
+     */
+    public function name(LanguagesDb $language = null)
+    {
+        if (!$language) $language = Language::getInstance()->getCurrentLanguage();
+
+        //language buffer empty
+        if (is_null($this->pageNameTranslations[$language->id])) {
+            $this->pageNameTranslations[$language->id] = PageNamesTranslateDb::find()->where([
+                'page_id'            => $this->id,
+                'common_language_id' => $language->id,
+            ])->one();
+        }
+
+        if (!$this->pageNameTranslations[$language->id]) return $this->program_name;
+
+        /** @var PageNamesTranslateDb $translate */
+        $translate = $this->pageNameTranslations[$language->id];
+
+        return $translate->name;
+    }
+
+    /**
+     * Returns description of page
+     * @param LanguagesDb|null $language
+     * @return string
+     * @throws \Iliich246\YicmsCommon\Base\CommonException
+     */
+    public function description(LanguagesDb $language = null)
+    {
+        if (!$language) $language = Language::getInstance()->getCurrentLanguage();
+
+        //language buffer empty
+        if (is_null($this->pageNameTranslations[$language->id])) {
+            $this->pageNameTranslations[$language->id] = PageNamesTranslateDb::find()->where([
+                'page_id'            => $this->id,
+                'common_language_id' => $language->id,
+            ])->one();
+        }
+
+        if (!$this->pageNameTranslations[$language->id]) return false;
+
+        /** @var PageNamesTranslateDb $translate */
+        $translate = $this->pageNameTranslations[$language->id];
+
+        return $translate->description;
     }
 
     /**

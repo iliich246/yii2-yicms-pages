@@ -68,6 +68,8 @@ class Pages extends ActiveRecord implements
     const SCENARIO_CREATE = 0;
     const SCENARIO_UPDATE = 1;
 
+    /** @var self[] buffer array */
+    private static $pagesBuffer = [];
     /** @var FieldsHandler instance of field handler object */
     private $fieldHandler;
     /** @var FilesHandler instance of file handler object*/
@@ -121,13 +123,19 @@ class Pages extends ActiveRecord implements
      */
     public static function getByName($programName)
     {
-        //TODO: makes buffer of pages
+        foreach(self::$pagesBuffer as $page)
+            if ($page->program_name == $programName)
+                return $page;
+
         /** @var self $page */
         $page = self::find()
             ->where(['program_name' => $programName])
             ->one();
 
-        if ($page) return $page;
+        if ($page) {
+            self::$pagesBuffer[$page->id] = $page;
+            return $page;
+        }
 
         Yii::error("Сan not find page with name " . $programName, __METHOD__);
 
@@ -177,7 +185,7 @@ class Pages extends ActiveRecord implements
     {
         if (!$this->hasErrors()) {
 
-            $pagesQuery = Pages::find()->where(['program_name' => $this->program_name]);
+            $pagesQuery = self::find()->where(['program_name' => $this->program_name]);
 
             if ($this->scenario == self::SCENARIO_UPDATE)
                 $pagesQuery->andWhere(['not in', 'program_name', $this->getOldAttribute('program_name')]);
@@ -189,6 +197,7 @@ class Pages extends ActiveRecord implements
 
     /**
      * @inheritdoc
+     * @throws \Iliich246\YicmsCommon\Base\CommonException
      */
     public function afterValidate()
     {
@@ -424,6 +433,7 @@ class Pages extends ActiveRecord implements
 
     /**
      * @inheritdoc
+     * @throws \Iliich246\YicmsCommon\Base\CommonException
      */
     public function getFieldTemplateReference()
     {
@@ -437,6 +447,7 @@ class Pages extends ActiveRecord implements
 
     /**
      * @inheritdoc
+     * @throws \Iliich246\YicmsCommon\Base\CommonException
      */
     public function getFieldReference()
     {
@@ -461,6 +472,7 @@ class Pages extends ActiveRecord implements
 
     /**
      * @inheritdoc
+     * @throws \Iliich246\YicmsCommon\Base\CommonException
      */
     public function getFileReference()
     {
@@ -474,6 +486,7 @@ class Pages extends ActiveRecord implements
 
     /**
      * @inheritdoc
+     * @throws \Iliich246\YicmsCommon\Base\CommonException
      */
     public function getFileTemplateReference()
     {
@@ -514,6 +527,7 @@ class Pages extends ActiveRecord implements
 
     /**
      * @inheritdoc
+     * @throws \Iliich246\YicmsCommon\Base\CommonException
      */
     public function getImageTemplateReference()
     {
@@ -527,6 +541,7 @@ class Pages extends ActiveRecord implements
 
     /**
      * @inheritdoc
+     * @throws \Iliich246\YicmsCommon\Base\CommonException
      */
     public function getImageReference()
     {
@@ -559,6 +574,7 @@ class Pages extends ActiveRecord implements
 
     /**
      * @inheritdoc
+     * @throws \Iliich246\YicmsCommon\Base\CommonException
      */
     public function getConditionTemplateReference()
     {
@@ -572,6 +588,7 @@ class Pages extends ActiveRecord implements
 
     /**
      * @inheritdoc
+     * @throws \Iliich246\YicmsCommon\Base\CommonException
      */
     public function getConditionReference()
     {

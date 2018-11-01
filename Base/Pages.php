@@ -231,6 +231,7 @@ class Pages extends ActiveRecord implements
         if (!$this->standardFields) return parent::save($runValidation, $attributeNames);
 
         //create standard seo fields
+
         $fieldTemplate                           = new FieldTemplate();
         $fieldTemplate->field_template_reference = $this->field_template_reference;
         $fieldTemplate->scenario                 = FieldTemplate::SCENARIO_CREATE;

@@ -19,7 +19,29 @@ use yii\db\ActiveRecord;
  * @author iliich246 <iliich246@gmail.com>
  */
 class PageNamesTranslateDb extends ActiveRecord
-{    /**
+{
+    /** @var array buffer of translates in view $buffer[<page-id>][<language-id>] */
+    private static $buffer;
+
+    /**
+     * Return buffered translation
+     * @param $pageId
+     * @param $languageId
+     * @return null|self
+     */
+    public static function getTranslate($pageId, $languageId) {
+        if (isset(self::$buffer[$pageId][$languageId]))
+            return self::$buffer[$pageId][$languageId];
+
+        $translation = self::find()->where([
+            'page_id'            => $pageId,
+            'common_language_id' => $languageId,
+        ])->one();
+
+        return self::$buffer[$pageId][$languageId] = $translation;
+    }
+
+    /**
      * @inheritdoc
      */
     public static function tableName()

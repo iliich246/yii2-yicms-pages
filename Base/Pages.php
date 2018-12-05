@@ -69,7 +69,7 @@ class Pages extends ActiveRecord implements
     const SCENARIO_UPDATE = 1;
 
     /** @var self[] buffer array */
-    private static $pagesBuffer = [];
+    public static $pagesBuffer = [];
     /** @var FieldsHandler instance of field handler object */
     private $fieldHandler;
     /** @var FilesHandler instance of file handler object*/
@@ -80,8 +80,7 @@ class Pages extends ActiveRecord implements
     private $conditionHandler;
     /** @var boolean if true standard field as title and seo field will be created */
     public $standardFields = true;
-    /** @var PageNamesTranslateDb[] buffer for language */
-    private $pageNameTranslations;
+
 
     /**
      * @param array $config
@@ -113,37 +112,6 @@ class Pages extends ActiveRecord implements
             'visible'        => 'Visible',
             'system_route'   => 'System route'
         ];
-    }
-
-    /**
-     * Return instance of page by her name
-     * @param $programName
-     * @return self
-     * @throws PagesException
-     */
-    public static function getByName($programName)
-    {
-        foreach(self::$pagesBuffer as $page)
-            if ($page->program_name == $programName)
-                return $page;
-
-        /** @var self $page */
-        $page = self::find()
-            ->where(['program_name' => $programName])
-            ->one();
-
-        if ($page) {
-            self::$pagesBuffer[$page->id] = $page;
-            return $page;
-        }
-
-        Yii::error("Сan not find page with name " . $programName, __METHOD__);
-
-        if (defined('YICMS_STRICT')) {
-            throw new PagesException('Сan not find page with name ' . $programName);
-        }
-
-        return new self();
     }
 
     /**
@@ -216,6 +184,59 @@ class Pages extends ActiveRecord implements
             $this->condition_template_reference = ConditionTemplate::generateTemplateReference();
             $this->condition_reference = $this->condition_template_reference;
         }
+    }
+
+
+    /**
+     * Return instance of page by her name
+     * @param $programName
+     * @return self
+     * @throws PagesException
+     */
+    public static function getByName($programName)
+    {
+        foreach(self::$pagesBuffer as $page)
+            if ($page->program_name == $programName)
+                return $page;
+
+        /** @var self $page */
+        $page = self::find()
+            ->where(['program_name' => $programName])
+            ->one();
+
+        if ($page) {
+            self::$pagesBuffer[$page->id] = $page;
+            return $page;
+        }
+
+        Yii::error("Сan not find page with name " . $programName, __METHOD__);
+
+        if (defined('YICMS_STRICT')) {
+            throw new PagesException('Сan not find page with name ' . $programName);
+        }
+
+        return new self();
+    }
+
+    /**
+     * Return instance of page by her id
+     * @param $id
+     * @return bool|Pages|null|static
+     */
+    public static function getInstanceById($id)
+    {
+        if (isset(self::$pagesBuffer[$id]))
+            return self::$pagesBuffer[$id];
+
+        $page = self::findOne($id);
+
+        if (!$page) return false;
+
+        self::$pagesBuffer[$page->id] = $page;
+
+
+
+        return $page;
     }
 
     /**
@@ -371,20 +392,9 @@ class Pages extends ActiveRecord implements
     {
         if (!$language) $language = Language::getInstance()->getCurrentLanguage();
 
-        //language buffer empty
-        if (is_null($this->pageNameTranslations[$language->id])) {
-            $this->pageNameTranslations[$language->id] = PageNamesTranslateDb::find()->where([
-                'page_id'            => $this->id,
-                'common_language_id' => $language->id,
-            ])->one();
-        }
+        if (!PageNamesTranslateDb::getTranslate($this->id, $language->id)) return $this->program_name;
 
-        if (!$this->pageNameTranslations[$language->id]) return $this->program_name;
-
-        /** @var PageNamesTranslateDb $translate */
-        $translate = $this->pageNameTranslations[$language->id];
-
-        return $translate->name;
+        return PageNamesTranslateDb::getTranslate($this->id, $language->id)->name;
     }
 
     /**
@@ -397,20 +407,9 @@ class Pages extends ActiveRecord implements
     {
         if (!$language) $language = Language::getInstance()->getCurrentLanguage();
 
-        //language buffer empty
-        if (is_null($this->pageNameTranslations[$language->id])) {
-            $this->pageNameTranslations[$language->id] = PageNamesTranslateDb::find()->where([
-                'page_id'            => $this->id,
-                'common_language_id' => $language->id,
-            ])->one();
-        }
+        if (!PageNamesTranslateDb::getTranslate($this->id, $language->id)) return $this->program_name;
 
-        if (!$this->pageNameTranslations[$language->id]) return false;
-
-        /** @var PageNamesTranslateDb $translate */
-        $translate = $this->pageNameTranslations[$language->id];
-
-        return $translate->description;
+        return PageNamesTranslateDb::getTranslate($this->id, $language->id)->name;
     }
 
     /**

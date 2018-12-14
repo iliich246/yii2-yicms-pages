@@ -7,6 +7,7 @@ use yii\db\ActiveRecord;
 use Iliich246\YicmsCommon\Base\SortOrderTrait;
 use Iliich246\YicmsCommon\Base\FictiveInterface;
 use Iliich246\YicmsCommon\Base\SortOrderInterface;
+use Iliich246\YicmsCommon\Base\NonexistentInterface;
 use Iliich246\YicmsCommon\Languages\Language;
 use Iliich246\YicmsCommon\Languages\LanguagesDb;
 use Iliich246\YicmsCommon\Fields\Field;
@@ -61,7 +62,8 @@ class Pages extends ActiveRecord implements
     ConditionsReferenceInterface,
     ConditionsInterface,
     FictiveInterface,
-    SortOrderInterface
+    SortOrderInterface,
+    NonexistentInterface
 {
     use SortOrderTrait;
 
@@ -80,7 +82,10 @@ class Pages extends ActiveRecord implements
     private $conditionHandler;
     /** @var boolean if true standard field as title and seo field will be created */
     public $standardFields = true;
-
+    /** @var bool keep nonexistent state of page */
+    private $isNonexistent = false;
+    /** @var string keeps name of nonexistent page */
+    private $nonexistentName;
 
     /**
      * @param array $config
@@ -215,7 +220,11 @@ class Pages extends ActiveRecord implements
             throw new PagesException('Сan not find page with name ' . $programName);
         }
 
-        return new self();
+        $nonexistentPage = new self();
+        $nonexistentPage->setNonexistent();
+        $nonexistentPage->nonexistentName = $programName;
+
+        return $nonexistentPage;
     }
 
     /**
@@ -234,8 +243,6 @@ class Pages extends ActiveRecord implements
 
         self::$pagesBuffer[$page->id] = $page;
 
-
-
         return $page;
     }
 
@@ -244,6 +251,8 @@ class Pages extends ActiveRecord implements
      */
     public function save($runValidation = true, $attributeNames = null)
     {
+        if ($this->isNonexistent) return false;
+
         if ($this->scenario == self::SCENARIO_CREATE)
             $this->pages_order = $this->maxOrder();
 
@@ -298,6 +307,8 @@ class Pages extends ActiveRecord implements
      */
     public function delete()
     {
+        if ($this->isNonexistent) return false;
+
         /** @var FieldTemplate[] $fieldTemplates */
         $fieldTemplates = FieldTemplate::find()->where([
             'field_template_reference' => $this->getFieldTemplateReference(),
@@ -347,6 +358,8 @@ class Pages extends ActiveRecord implements
      */
     public function isConstraints()
     {
+        if ($this->isNonexistent) return false;
+
         /** @var FieldTemplate[] $fieldTemplates */
         $fieldTemplates = FieldTemplate::find()->where([
             'field_template_reference' => $this->getFieldTemplateReference(),
@@ -670,5 +683,37 @@ class Pages extends ActiveRecord implements
     public function isFictive()
     {
         return false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isNonexistent()
+    {
+        return $this->isNonexistent;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setNonexistent()
+    {
+        $this->isNonexistent = true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getNonexistentName()
+    {
+        return $this->nonexistentName;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setNonexistentName($name)
+    {
+        $this->nonexistentName = $name;
     }
 }

@@ -355,6 +355,7 @@ class Pages extends ActiveRecord implements
     /**
      * Return true if page has any constraints
      * @return bool
+     * @throws \Iliich246\YicmsCommon\Base\CommonException
      */
     public function isConstraints()
     {

@@ -261,7 +261,6 @@ class Pages extends ActiveRecord implements
         if (!$this->standardFields) return parent::save($runValidation, $attributeNames);
 
         //create standard seo fields
-
         $fieldTemplate                           = new FieldTemplate();
         $fieldTemplate->field_template_reference = $this->field_template_reference;
         $fieldTemplate->scenario                 = FieldTemplate::SCENARIO_CREATE;
@@ -423,7 +422,7 @@ class Pages extends ActiveRecord implements
 
         if (!PageNamesTranslateDb::getTranslate($this->id, $language->id)) return $this->program_name;
 
-        return PageNamesTranslateDb::getTranslate($this->id, $language->id)->name;
+        return PageNamesTranslateDb::getTranslate($this->id, $language->id)->description;
     }
 
     /**

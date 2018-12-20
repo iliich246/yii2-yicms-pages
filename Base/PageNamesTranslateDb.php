@@ -56,15 +56,16 @@ class PageNamesTranslateDb extends ActiveRecord
      * @param $languageId
      * @return null|self
      */
-    public static function getTranslate($pageId, $languageId) {
-        if (isset(self::$buffer[$pageId][$languageId]))
-            return self::$buffer[$pageId][$languageId];
+    public static function getTranslate($pageId, $languageId)
+    {
+        if (!isset(self::$buffer[$pageId][$languageId]) &&
+            !is_null(self::$buffer[$pageId][$languageId])) {
+            self::$buffer[$pageId][$languageId] = self::find()->where([
+                'page_id'            => $pageId,
+                'common_language_id' => $languageId,
+            ])->one();
+        }
 
-        $translation = self::find()->where([
-            'page_id'            => $pageId,
-            'common_language_id' => $languageId,
-        ])->one();
-
-        return self::$buffer[$pageId][$languageId] = $translation;
+        return self::$buffer[$pageId][$languageId];
     }
 }

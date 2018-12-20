@@ -420,7 +420,7 @@ class Pages extends ActiveRecord implements
     {
         if (!$language) $language = Language::getInstance()->getCurrentLanguage();
 
-        if (!PageNamesTranslateDb::getTranslate($this->id, $language->id)) return $this->program_name;
+        if (!PageNamesTranslateDb::getTranslate($this->id, $language->id)) return '';
 
         return PageNamesTranslateDb::getTranslate($this->id, $language->id)->description;
     }

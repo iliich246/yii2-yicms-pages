@@ -230,7 +230,8 @@ class Pages extends ActiveRecord implements
     /**
      * Return instance of page by her id
      * @param $id
-     * @return bool|Pages|null|static
+     * @return Pages|null|static
+     * @throws PagesException
      */
     public static function getInstanceById($id)
     {
@@ -239,11 +240,21 @@ class Pages extends ActiveRecord implements
 
         $page = self::findOne($id);
 
-        if (!$page) return false;
+        if ($page) {
+            self::$pagesBuffer[$page->id] = $page;
+            return $page;
+        }
 
-        self::$pagesBuffer[$page->id] = $page;
+        Yii::error("Сan not find page with id " . $id, __METHOD__);
 
-        return $page;
+        if (defined('YICMS_STRICT')) {
+            throw new PagesException("Сan not find page with id " . $id);
+        }
+
+        $nonexistentPage = new self();
+        $nonexistentPage->setNonexistent();
+
+        return $nonexistentPage;
     }
 
     /**

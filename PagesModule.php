@@ -3,7 +3,7 @@
 namespace Iliich246\YicmsPages;
 
 use Yii;
-use Iliich246\YicmsCommon\Annotation\AnnotateInterface;
+use Iliich246\YicmsCommon\Annotations\AnnotateInterface;
 use Iliich246\YicmsCommon\Base\YicmsModuleInterface;
 use Iliich246\YicmsCommon\Base\AbstractConfigurableModule;
 

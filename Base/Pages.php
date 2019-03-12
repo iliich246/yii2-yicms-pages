@@ -2,13 +2,12 @@
 
 namespace Iliich246\YicmsPages\Base;
 
-use Iliich246\YicmsCommon\Annotation\Annotator;
-use Iliich246\YicmsCommon\CommonModule;
-use Iliich246\YicmsPages\PagesModule;
 use Yii;
 use yii\db\ActiveRecord;
-use Iliich246\YicmsCommon\Annotation\AnnotateInterface;
-use Iliich246\YicmsCommon\Annotation\AnnotatorFileInterface;
+use Iliich246\YicmsCommon\CommonModule;
+use Iliich246\YicmsCommon\Annotations\Annotator;
+use Iliich246\YicmsCommon\Annotations\AnnotateInterface;
+use Iliich246\YicmsCommon\Annotations\AnnotatorFileInterface;
 use Iliich246\YicmsCommon\Base\SortOrderTrait;
 use Iliich246\YicmsCommon\Base\FictiveInterface;
 use Iliich246\YicmsCommon\Base\SortOrderInterface;
@@ -35,6 +34,7 @@ use Iliich246\YicmsCommon\Conditions\ConditionTemplate;
 use Iliich246\YicmsCommon\Conditions\ConditionsHandler;
 use Iliich246\YicmsCommon\Conditions\ConditionsInterface;
 use Iliich246\YicmsCommon\Conditions\ConditionsReferenceInterface;
+use Iliich246\YicmsPages\PagesModule;
 
 /**
  * Class Pages
@@ -742,7 +742,7 @@ class Pages extends ActiveRecord implements
      */
     public function annotate()
     {
-
+        
     }
 
     /**
@@ -763,7 +763,7 @@ class Pages extends ActiveRecord implements
      */
     public function getAnnotationFileName()
     {
-
+        return ucfirst(mb_strtolower($this->program_name));
     }
 
     /**
@@ -773,6 +773,7 @@ class Pages extends ActiveRecord implements
     {
         $path = Yii::getAlias(CommonModule::getInstance()->yicmsLocation);
         $path .= '/' . PagesModule::getInstance()->getModuleName();
+        $path .= '/' . CommonModule::getInstance()->annotationsDirectory;
 
         return $path;
     }

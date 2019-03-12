@@ -2,8 +2,13 @@
 
 namespace Iliich246\YicmsPages\Base;
 
+use Iliich246\YicmsCommon\Annotation\Annotator;
+use Iliich246\YicmsCommon\CommonModule;
+use Iliich246\YicmsPages\PagesModule;
 use Yii;
 use yii\db\ActiveRecord;
+use Iliich246\YicmsCommon\Annotation\AnnotateInterface;
+use Iliich246\YicmsCommon\Annotation\AnnotatorFileInterface;
 use Iliich246\YicmsCommon\Base\SortOrderTrait;
 use Iliich246\YicmsCommon\Base\FictiveInterface;
 use Iliich246\YicmsCommon\Base\SortOrderInterface;
@@ -63,7 +68,9 @@ class Pages extends ActiveRecord implements
     ConditionsInterface,
     FictiveInterface,
     SortOrderInterface,
-    NonexistentInterface
+    NonexistentInterface,
+    AnnotateInterface,
+    AnnotatorFileInterface
 {
     use SortOrderTrait;
 
@@ -86,6 +93,8 @@ class Pages extends ActiveRecord implements
     private $isNonexistent = false;
     /** @var string keeps name of nonexistent page */
     private $nonexistentName;
+    /** @var Annotator instance */
+    private $annotator = null;
 
     /**
      * @param array $config
@@ -726,5 +735,45 @@ class Pages extends ActiveRecord implements
     public function setNonexistentName($name)
     {
         $this->nonexistentName = $name;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function annotate()
+    {
+
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAnnotator()
+    {
+        if (!is_null($this->annotator)) return $this->annotator;
+
+        $this->annotator = new Annotator();
+        $this->annotator->setAnnotatorFileObject($this);
+
+        return $this->annotator;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAnnotationFileName()
+    {
+
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getAnnotationFilePath()
+    {
+        $path = Yii::getAlias(CommonModule::getInstance()->yicmsLocation);
+        $path .= '/' . PagesModule::getInstance()->getModuleName();
+
+        return $path;
     }
 }

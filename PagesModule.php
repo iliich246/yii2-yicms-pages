@@ -3,16 +3,18 @@
 namespace Iliich246\YicmsPages;
 
 use Yii;
-use Iliich246\YicmsCommon\Base\AbstractConfigurableModule;
+use Iliich246\YicmsCommon\Annotation\AnnotateInterface;
 use Iliich246\YicmsCommon\Base\YicmsModuleInterface;
-use Iliich246\YicmsCommon\CommonModule;
+use Iliich246\YicmsCommon\Base\AbstractConfigurableModule;
 
 /**
  * Class PagesModule
  *
  * @author iliich246 <iliich246@gmail.com>
  */
-class PagesModule extends AbstractConfigurableModule implements YicmsModuleInterface
+class PagesModule extends AbstractConfigurableModule implements
+    YicmsModuleInterface,
+    AnnotateInterface
 {
     /** @inheritdoc */
     public $controllerMap = [
@@ -43,5 +45,13 @@ class PagesModule extends AbstractConfigurableModule implements YicmsModuleInter
     public static function getModuleName()
     {
         return 'Pages';
+    }
+
+    /**
+     * @inherited
+     */
+    public function annotate()
+    {
+
     }
 }

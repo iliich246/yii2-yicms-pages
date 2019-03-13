@@ -19,9 +19,9 @@ use <?= $annotator->getExtendsUseClass() ?>;
  *
  * This class was generated automatically
  *
- * ///-> This part of annotation will be change automatically. Do not change it.
+ * |||-> This part of annotation will be change automatically. Do not change it.
  *
- * ///<- End of block of auto annotation
+ * |||<- End of block of auto annotation
  *
  * @author iliich246 <iliich246@gmail.com>
  */
@@ -29,7 +29,8 @@ class <?= $annotator->getClassName() ?> extends <?= $annotator->getExtendsClassN
 
 {
     /**
-    * @return <?= $annotator->getExtendsClassName() ?> instance .
+    * @return self instance .
+    * @throws \Iliich246\YicmsPages\Base\PagesException
     */
     public static function getInstance()
     {

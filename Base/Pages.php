@@ -203,7 +203,7 @@ class Pages extends ActiveRecord implements
     /**
      * Return instance of page by her name
      * @param $programName
-     * @return self
+     * @return static
      * @throws PagesException
      */
     public static function getByName($programName)
@@ -738,16 +738,21 @@ class Pages extends ActiveRecord implements
 
     /**
      * @inheritdoc
+     * @throws \Iliich246\YicmsCommon\Base\CommonException
+     * @throws \ReflectionException
      */
     public function annotate()
     {
-        return $this->getAnnotator()->test();
-//        $view = new View();
-//        return $view->renderFile($this->getAnnotationTemplateFile());
+        $this->getAnnotator()->addAnnotationArray(
+            FieldTemplate::getAnnotationsStringArray($this->getFieldTemplateReference())
+        );
+
+        $this->getAnnotator()->finish();
     }
 
     /**
      * @inheritdoc
+     * @throws \ReflectionException
      */
     public function getAnnotator()
     {
@@ -755,6 +760,7 @@ class Pages extends ActiveRecord implements
 
         $this->annotator = new Annotator();
         $this->annotator->setAnnotatorFileObject($this);
+        $this->annotator->prepare();
 
         return $this->annotator;
     }
@@ -781,6 +787,7 @@ class Pages extends ActiveRecord implements
 
     /**
      * @inheritdoc
+     * @throws \ReflectionException
      */
     public static function getAnnotationTemplateFile()
     {

@@ -200,7 +200,6 @@ class Pages extends ActiveRecord implements
         }
     }
 
-
     /**
      * Return instance of page by her name
      * @param $programName
@@ -742,7 +741,9 @@ class Pages extends ActiveRecord implements
      */
     public function annotate()
     {
-        
+        return $this->getAnnotator()->test();
+//        $view = new View();
+//        return $view->renderFile($this->getAnnotationTemplateFile());
     }
 
     /**
@@ -776,5 +777,24 @@ class Pages extends ActiveRecord implements
         $path .= '/' . CommonModule::getInstance()->annotationsDirectory;
 
         return $path;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function getAnnotationTemplateFile()
+    {
+        $class = new \ReflectionClass(self::class);
+        return dirname($class->getFileName())  . '/annotations/pages.php';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function getAnnotationFileNamespace()
+    {
+        return CommonModule::getInstance()->yicmsNamespace . '\\' .
+               PagesModule::getInstance()->getModuleName() . '\\' .
+               CommonModule::getInstance()->annotationsDirectory;
     }
 }

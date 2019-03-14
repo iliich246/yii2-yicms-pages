@@ -747,6 +747,12 @@ class Pages extends ActiveRecord implements
             FieldTemplate::getAnnotationsStringArray($this->getFieldTemplateReference())
         );
 
+        FilesBlock::setParentFileAnnotator($this);
+
+        $this->getAnnotator()->addAnnotationArray(
+            FilesBlock::getAnnotationsStringArray($this->getFileTemplateReference())
+        );
+
         $this->getAnnotator()->finish();
     }
 

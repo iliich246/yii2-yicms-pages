@@ -743,6 +743,8 @@ class Pages extends ActiveRecord implements
      */
     public function annotate()
     {
+        FieldTemplate::setParentFileAnnotator($this);
+
         $this->getAnnotator()->addAnnotationArray(
             FieldTemplate::getAnnotationsStringArray($this->getFieldTemplateReference())
         );
@@ -789,6 +791,22 @@ class Pages extends ActiveRecord implements
         $path .= '/' . CommonModule::getInstance()->annotationsDirectory;
 
         return $path;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getExtendsUseClass()
+    {
+        return 'Iliich246\YicmsPages\Base\Pages';
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getExtendsClassName()
+    {
+        return 'Pages';
     }
 
     /**

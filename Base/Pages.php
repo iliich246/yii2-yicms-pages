@@ -200,6 +200,33 @@ class Pages extends ActiveRecord implements
         }
     }
 
+    public function __get($name)
+    {
+        if (strpos($name, 'field_') === 0) {
+
+        }
+
+        if (strpos($name, 'file_') === 0) {
+
+        }
+
+        if (strpos($name, 'image_') === 0) {
+
+        }
+
+        if (strpos($name, 'condition_') === 0) {
+
+        }
+
+
+
+        if ($this->getFieldHandler()->isField($name)) {
+//            return $this->getFieldHandler()->getField($name);
+        }
+
+        return parent::__get($name);
+    }
+
     /**
      * Return instance of page by her name
      * @param $programName
@@ -759,6 +786,12 @@ class Pages extends ActiveRecord implements
 
         $this->getAnnotator()->addAnnotationArray(
             ImagesBlock::getAnnotationsStringArray($this->getImageTemplateReference())
+        );
+
+        ConditionTemplate::setParentFileAnnotator($this);
+
+        $this->getAnnotator()->addAnnotationArray(
+            ConditionTemplate::getAnnotationsStringArray($this->getConditionTemplateReference())
         );
 
         $this->getAnnotator()->finish();

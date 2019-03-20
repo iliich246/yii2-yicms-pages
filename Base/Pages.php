@@ -202,6 +202,9 @@ class Pages extends ActiveRecord implements
 
     public function __get($name)
     {
+        if (get_parent_class($this) == 'yii\db\ActiveRecord')
+            return parent::__get($name);
+
         if (strpos($name, 'field_') === 0) {
 
         }
@@ -219,6 +222,8 @@ class Pages extends ActiveRecord implements
         }
 
 
+
+        throw new \Exception(print_r(get_parent_class($this) , true));
 
         if ($this->getFieldHandler()->isField($name)) {
 //            return $this->getFieldHandler()->getField($name);

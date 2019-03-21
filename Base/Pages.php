@@ -218,6 +218,11 @@ class Pages extends ActiveRecord implements
         }
     }
 
+    /**
+     * Magical get method for use object annotations
+     * @param string $name
+     * @return mixed
+     */
     public function __get($name)
     {
         if (in_array($name, self::$annotationExceptionWords))

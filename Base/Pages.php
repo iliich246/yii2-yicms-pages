@@ -95,6 +95,24 @@ class Pages extends ActiveRecord implements
     private $nonexistentName;
     /** @var Annotator instance */
     private $annotator = null;
+    /** @var array of exception words for magical getter/setter */
+    protected static $annotationExceptionWords = [
+        'id',
+        'program_name',
+        'editable',
+        'visible',
+        'system_route',
+        'ruled_route',
+        'pages_order',
+        'field_template_reference',
+        'field_reference',
+        'file_template_reference',
+        'file_reference',
+        'image_template_reference',
+        'image_reference',
+        'condition_template_reference',
+        'condition_reference'
+    ];
 
     /**
      * @param array $config
@@ -202,32 +220,48 @@ class Pages extends ActiveRecord implements
 
     public function __get($name)
     {
-        if (get_parent_class($this) == 'yii\db\ActiveRecord')
+        if (in_array($name, self::$annotationExceptionWords))
             return parent::__get($name);
 
         if (strpos($name, 'field_') === 0) {
+            if ($this->isField(substr($name, 6)))
+                return $this->getFieldHandler()->getField(substr($name, 6));
 
+            return parent::__get($name);
         }
 
         if (strpos($name, 'file_') === 0) {
+            if ($this->isFileBlock(substr($name, 5)))
+                return $this->getFileHandler()->getFileBlock(substr($name, 5));
 
+            return parent::__get($name);
         }
 
         if (strpos($name, 'image_') === 0) {
+            if ($this->isImageBlock(substr($name, 6)))
+                return $this->getImagesHandler()->getImageBlock(substr($name, 6));
 
+            return parent::__get($name);
         }
 
         if (strpos($name, 'condition_') === 0) {
+            if ($this->isCondition(substr($name, 10)))
+                return $this->getConditionsHandler()->getCondition(substr($name, 10));
 
+            return parent::__get($name);
         }
 
+        if ($this->getFieldHandler()->isField($name))
+            return $this->getFieldHandler()->getField($name);
 
+        if ($this->getFileHandler()->isFileBlock($name))
+            return $this->getFileHandler()->getFileBlock($name);
 
-        throw new \Exception(print_r(get_parent_class($this) , true));
+        if ($this->getImagesHandler()->isImageBlock($name))
+            return $this->getImagesHandler()->getImageBlock($name);
 
-        if ($this->getFieldHandler()->isField($name)) {
-//            return $this->getFieldHandler()->getField($name);
-        }
+        if ($this->getConditionsHandler()->isCondition($name))
+            return $this->getConditionsHandler()->getCondition($name);
 
         return parent::__get($name);
     }
@@ -245,7 +279,7 @@ class Pages extends ActiveRecord implements
                 return $page;
 
         /** @var self $page */
-        $page = self::find()
+        $page = static::find()
             ->where(['program_name' => $programName])
             ->one();
 
@@ -278,7 +312,7 @@ class Pages extends ActiveRecord implements
         if (isset(self::$pagesBuffer[$id]))
             return self::$pagesBuffer[$id];
 
-        $page = self::findOne($id);
+        $page = static::findOne($id);
 
         if ($page) {
             self::$pagesBuffer[$page->id] = $page;
@@ -497,6 +531,14 @@ class Pages extends ActiveRecord implements
 
     /**
      * @inheritdoc
+     */
+    public function isField($name)
+    {
+        return $this->getFieldHandler()->isField($name);
+    }
+
+    /**
+     * @inheritdoc
      * @throws \Iliich246\YicmsCommon\Base\CommonException
      */
     public function getFieldTemplateReference()
@@ -573,6 +615,14 @@ class Pages extends ActiveRecord implements
     /**
      * @inheritdoc
      */
+    public function isFileBlock($name)
+    {
+        $this->getFileHandler()->isFileBlock($name);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getImagesHandler()
     {
         if (!$this->imageHandler)
@@ -587,6 +637,14 @@ class Pages extends ActiveRecord implements
     public function getImageBlock($name)
     {
         return $this->getImagesHandler()->getImageBlock($name);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isImageBlock($name)
+    {
+        return $this->getImagesHandler()->isImageBlock($name);
     }
 
     /**
@@ -634,6 +692,14 @@ class Pages extends ActiveRecord implements
     public function getCondition($name)
     {
         return $this->getConditionsHandler()->getCondition($name);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isCondition($name)
+    {
+        return $this->getConditionsHandler()->isCondition($name);
     }
 
     /**

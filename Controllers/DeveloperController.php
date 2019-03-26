@@ -135,6 +135,8 @@ class DeveloperController extends Controller
                 //TODO: bootbox error
             }
 
+            $page->annotate();
+
             return FieldsDevModalWidget::widget([
                 'devFieldGroup' => $devFieldGroup,
                 'dataSaved' => true,
@@ -151,6 +153,8 @@ class DeveloperController extends Controller
             if (!$devFilesGroup->save()) {
                 //TODO: bootbox error
             }
+
+            $page->annotate();
 
             return FilesDevModalWidget::widget([
                 'devFilesGroup' => $devFilesGroup,
@@ -169,6 +173,8 @@ class DeveloperController extends Controller
                 //TODO: bootbox error
             }
 
+            $page->annotate();
+
             return ImagesDevModalWidget::widget([
                 'devImagesGroup' => $devImagesGroup,
                 'dataSaved' => true,
@@ -185,6 +191,8 @@ class DeveloperController extends Controller
             if (!$devConditionsGroup->save()) {
                 //TODO: bootbox error
             }
+
+            $page->annotate();
 
             return ConditionsDevModalWidget::widget([
                 'devConditionsGroup' => $devConditionsGroup,

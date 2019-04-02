@@ -96,7 +96,10 @@ class DeveloperController extends Controller
      * Updates page
      * @param $id
      * @return string
+     * @throws CommonException
      * @throws NotFoundHttpException
+     * @throws \ReflectionException
+     * @throws \Exception
      */
     public function actionUpdate($id)
     {
@@ -122,6 +125,8 @@ class DeveloperController extends Controller
                 'success' => $success
             ]);
         }
+
+        $page->annotate();
 
         //initialize fields group
         $devFieldGroup = new DevFieldsGroup();
@@ -240,6 +245,7 @@ class DeveloperController extends Controller
      * Display page for work with admin translations of page
      * @param $id
      * @return string
+     * @throws CommonException
      * @throws NotFoundHttpException
      */
     public function actionPageTranslates($id)
@@ -286,11 +292,13 @@ class DeveloperController extends Controller
     /**
      * Action for delete page
      * @param $id
-     * @param bool|false $deletePass
+     * @param bool $deletePass
      * @return \yii\web\Response
      * @throws CommonException
      * @throws NotFoundHttpException
      * @throws PagesException
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDeletePage($id, $deletePass = false)
     {

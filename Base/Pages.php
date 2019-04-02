@@ -93,6 +93,8 @@ class Pages extends ActiveRecord implements
     private $isNonexistent = false;
     /** @var string keeps name of nonexistent page */
     private $nonexistentName;
+    /** @var bool state of annotation necessity */
+    private $needToAnnotate = true;
     /** @var Annotator instance */
     private $annotator = null;
     /** @var array of exception words for magical getter/setter */
@@ -872,6 +874,30 @@ class Pages extends ActiveRecord implements
         );
 
         $this->getAnnotator()->finish();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function offAnnotation()
+    {
+        $this->needToAnnotate = false;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function onAnnotation()
+    {
+        $this->needToAnnotate = true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isAnnotationActive()
+    {
+        return $this->needToAnnotate;
     }
 
     /**

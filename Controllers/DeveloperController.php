@@ -126,8 +126,6 @@ class DeveloperController extends Controller
             ]);
         }
 
-        $page->annotate();
-
         //initialize fields group
         $devFieldGroup = new DevFieldsGroup();
         $devFieldGroup->setFieldTemplateReference($page->getFieldTemplateReference());
@@ -226,6 +224,8 @@ class DeveloperController extends Controller
         $conditionTemplates = ConditionTemplate::getListQuery($page->getConditionTemplateReference())
                                         ->orderBy([ConditionTemplate::getOrderFieldName() => SORT_ASC])
                                         ->all();
+
+        $page->annotate();
 
         return $this->render('/developer/create_update', [
             'page'                       => $page,

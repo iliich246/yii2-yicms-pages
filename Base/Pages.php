@@ -74,8 +74,8 @@ class Pages extends ActiveRecord implements
 {
     use SortOrderTrait;
 
-    const SCENARIO_CREATE = 0;
-    const SCENARIO_UPDATE = 1;
+    const SCENARIO_CREATE = 0x00;
+    const SCENARIO_UPDATE = 0x01;
 
     /** @var self[] buffer array */
     public static $pagesBuffer = [];
@@ -232,7 +232,7 @@ class Pages extends ActiveRecord implements
         if (in_array($name, self::$annotationExceptionWords))
             return parent::__get($name);
 
-        if ($this->scenario == self::SCENARIO_CREATE)
+        if ($this->scenario === self::SCENARIO_CREATE)
             return parent::__get($name);
 
         if (strpos($name, 'field_') === 0) {

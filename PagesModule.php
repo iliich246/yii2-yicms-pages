@@ -2,9 +2,9 @@
 
 namespace Iliich246\YicmsPages;
 
-use Yii;
+use yii\base\BootstrapInterface;
 use Iliich246\YicmsCommon\Annotations\AnnotateInterface;
-use Iliich246\YicmsCommon\Base\YicmsModuleInterface;
+use Iliich246\YicmsCommon\Base\Generator;
 use Iliich246\YicmsCommon\Base\AbstractConfigurableModule;
 
 /**
@@ -13,7 +13,7 @@ use Iliich246\YicmsCommon\Base\AbstractConfigurableModule;
  * @author iliich246 <iliich246@gmail.com>
  */
 class PagesModule extends AbstractConfigurableModule implements
-    YicmsModuleInterface,
+    BootstrapInterface,
     AnnotateInterface
 {
     /** @inheritdoc */
@@ -32,6 +32,15 @@ class PagesModule extends AbstractConfigurableModule implements
     }
 
     /**
+     * @inheritdoc
+     */
+    public function bootstrap($app)
+    {
+        $generator = new Generator($this);
+        $generator->generate();
+    }
+
+    /**
      * @inherited
      */
     public function getNameSpace()
@@ -45,6 +54,14 @@ class PagesModule extends AbstractConfigurableModule implements
     public function getModuleDir()
     {
         return __DIR__;
+    }
+
+    /**
+     * @inherited
+     */
+    public function isNeedGenerate()
+    {
+        return false;
     }
 
     /**

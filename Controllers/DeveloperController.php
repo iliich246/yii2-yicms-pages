@@ -8,6 +8,7 @@ use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\BadRequestHttpException;
+use Iliich246\YicmsCommon\Base\DevFilter;
 use Iliich246\YicmsCommon\Base\CommonHashForm;
 use Iliich246\YicmsCommon\Base\CommonException;
 use Iliich246\YicmsCommon\Languages\Language;
@@ -40,16 +41,19 @@ class DeveloperController extends Controller
     public $layout = '@yicms-common/Views/layouts/developer';
     /** @inheritdoc */
     public $defaultAction = 'list';
+
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
         return [
-//            'root' => [
-//                'class' => DevFilter::className(),
-//                'except' => ['login-as-root'],
-//            ],
+            'dev' => [
+                'class' => DevFilter::class,
+                'redirect' => function() {
+                    return $this->redirect(Url::home());
+                }
+            ],
         ];
     }
 

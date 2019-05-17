@@ -22,8 +22,6 @@ use Iliich246\YicmsPages\Base\Pages;
 class AdminController extends Controller
 {
     /** @inheritdoc */
-    //public $layout = '@yicms-common/Views/layouts/developer';
-    /** @inheritdoc */
     public $defaultAction = 'edit-page';
 
     /**
@@ -34,17 +32,18 @@ class AdminController extends Controller
         $this->layout = CommonModule::getInstance()->yicmsLocation . '/Common/Views/layouts/admin';
     }
 
-
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
         return [
-//            'root' => [
-//                'class' => AdminFilter::className(),
-//                'except' => ['login-as-root'],
-//            ],
+            'admin' => [
+                'class' => AdminFilter::class,
+                'redirect' => function() {
+                    return $this->redirect(Url::toRoute('/common/admin/login'));
+                }
+            ],
         ];
     }
 

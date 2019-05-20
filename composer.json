@@ -16,7 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Iliich246\\YicmsCommon\\": ""
+            "Iliich246\\YicmsPages\\": ""
         }
     },
     "repositories": [

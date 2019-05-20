@@ -2,6 +2,7 @@
 
 namespace Iliich246\YicmsPages\Controllers;
 
+use Iliich246\YicmsPages\Base\PagesConfigDb;
 use Yii;
 use yii\base\Model;
 use yii\helpers\Url;
@@ -375,6 +376,31 @@ class DeveloperController extends Controller
 
         return $this->render('/pjax/update-pages-list-container', [
             'pages' => $pages
+        ]);
+    }
+
+    /**
+     * Maintenance action for pages module
+     * @return string
+     * @throws PagesException
+     */
+    public function actionMaintenance()
+    {
+        $config = PagesConfigDb::getInstance();
+
+        if ($config->load(Yii::$app->request->post()) && $config->validate()) {
+            if ($config->save()) {
+                return $this->render('/developer/maintenance', [
+                    'config'  => $config,
+                    'success' => true,
+                ]);
+            }
+
+            throw new PagesException('Can`t save data in database');
+        }
+
+        return $this->render('/developer/maintenance', [
+            'config' => $config
         ]);
     }
 }

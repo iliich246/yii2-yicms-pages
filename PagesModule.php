@@ -3,6 +3,7 @@
 namespace Iliich246\YicmsPages;
 
 use yii\base\BootstrapInterface;
+use Iliich246\YicmsCommon\Base\YicmsModuleInterface;
 use Iliich246\YicmsCommon\Annotations\AnnotateInterface;
 use Iliich246\YicmsCommon\Base\Generator;
 use Iliich246\YicmsCommon\Base\AbstractConfigurableModule;
@@ -14,8 +15,18 @@ use Iliich246\YicmsCommon\Base\AbstractConfigurableModule;
  */
 class PagesModule extends AbstractConfigurableModule implements
     BootstrapInterface,
-    AnnotateInterface
+    YicmsModuleInterface
 {
+    /** @var bool keeps true if for this module was generated changeable admin files */
+    public $isGenerated = false;
+    /** @var bool if true generator will be generate in strong mode, even existed files will be replaced */
+    public $strongGenerating = false;
+
+    /** @inheritdoc */
+    public $configurable = [
+        'isGenerated',
+    ];
+
     /** @inheritdoc */
     public $controllerMap = [
         'dev' => 'Iliich246\YicmsPages\Controllers\DeveloperController'
@@ -67,16 +78,16 @@ class PagesModule extends AbstractConfigurableModule implements
     /**
      * @inherited
      */
-    public static function getModuleName()
+    public function isGeneratorInStrongMode()
     {
-        return 'Pages';
+        return !!$this->strongGenerating;
     }
 
     /**
      * @inherited
      */
-    public function annotate()
+    public static function getModuleName()
     {
-
+        return 'Pages';
     }
 }

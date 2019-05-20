@@ -37,23 +37,15 @@ class m171114_174807_pages_init extends Migration
          * pages_config table
          */
         $this->createTable('{{%pages_config}}', [
-            'id'                      => $this->primaryKey(),
-            'imagesPatch'             => $this->string(),
-            'filesPatch'              => $this->string(),
-            'thumbNailsDirectoryName' => $this->string(),
+            'id'               => $this->primaryKey(),
+            'is_generated'     => $this->boolean(),
+            'strongGenerating' => $this->boolean(),
         ]);
 
         $this->insert('{{%pages_config}}', [
-            'id' => 1,
-            'imagesPatch' => DIRECTORY_SEPARATOR .
-                             'web' . DIRECTORY_SEPARATOR .
-                             'files' . DIRECTORY_SEPARATOR .
-                             'pages' . DIRECTORY_SEPARATOR,
-            'filesPatch' => DIRECTORY_SEPARATOR .
-                            'web' . DIRECTORY_SEPARATOR .
-                            'images' . DIRECTORY_SEPARATOR .
-                            'pages' . DIRECTORY_SEPARATOR,
-            'thumbNailsDirectoryName' => 'thumb'
+            'id'               => 1,
+            'isGenerated'      => false,
+            'strongGenerating' => false
         ]);
 
         /**

@@ -38,7 +38,7 @@ class m171114_174807_pages_init extends Migration
          */
         $this->createTable('{{%pages_config}}', [
             'id'               => $this->primaryKey(),
-            'is_generated'     => $this->boolean(),
+            'isGenerated'     => $this->boolean(),
             'strongGenerating' => $this->boolean(),
         ]);
 

@@ -2,6 +2,7 @@
 
 namespace Iliich246\YicmsPages;
 
+use Yii;
 use yii\base\BootstrapInterface;
 use Iliich246\YicmsCommon\Base\YicmsModuleInterface;
 use Iliich246\YicmsCommon\Annotations\AnnotateInterface;
@@ -39,6 +40,13 @@ class PagesModule extends AbstractConfigurableModule implements
     {
         //TODO: makes correct build of controller map via common->$yicmsLocation
         $this->controllerMap['admin'] = 'app\yicms\Pages\Controllers\AdminController';
+
+        Yii::setAlias('@yicms-pages', Yii::getAlias('@vendor') .
+            DIRECTORY_SEPARATOR .
+            'iliich246' .
+            DIRECTORY_SEPARATOR .
+            'yii2-yicms-pages');
+
         parent::init();
     }
 

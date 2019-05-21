@@ -4,10 +4,11 @@ namespace Iliich246\YicmsPages;
 
 use Yii;
 use yii\base\BootstrapInterface;
+use Iliich246\YicmsCommon\CommonModule;
 use Iliich246\YicmsCommon\Base\YicmsModuleInterface;
-use Iliich246\YicmsCommon\Annotations\AnnotateInterface;
 use Iliich246\YicmsCommon\Base\Generator;
 use Iliich246\YicmsCommon\Base\AbstractConfigurableModule;
+use Iliich246\YicmsPages\Base\PagesConfigDb;
 
 /**
  * Class PagesModule
@@ -38,16 +39,18 @@ class PagesModule extends AbstractConfigurableModule implements
      */
     public function init()
     {
-        //TODO: makes correct build of controller map via common->$yicmsLocation
-        $this->controllerMap['admin'] = 'app\yicms\Pages\Controllers\AdminController';
-
         Yii::setAlias('@yicms-pages', Yii::getAlias('@vendor') .
             DIRECTORY_SEPARATOR .
             'iliich246' .
             DIRECTORY_SEPARATOR .
             'yii2-yicms-pages');
 
+
         parent::init();
+
+        $namespace = CommonModule::getInstance()->yicmsNamespace . '\Pages\Controllers\\';
+
+        $this->controllerMap['admin'] = $namespace . 'AdminController';
     }
 
     /**
@@ -78,9 +81,20 @@ class PagesModule extends AbstractConfigurableModule implements
     /**
      * @inherited
      */
-    public function isNeedGenerate()
+    public function isGenerated()
     {
-        return false;
+        return !!$this->isGenerated;
+    }
+
+    /**
+     * @inherited
+     */
+    public function setAsGenerated()
+    {
+        $config = PagesConfigDb::getInstance();
+        $config->isGenerated = true;
+
+        $config->save(false);
     }
 
     /**

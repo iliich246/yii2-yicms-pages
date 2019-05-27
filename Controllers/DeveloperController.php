@@ -380,6 +380,24 @@ class DeveloperController extends Controller
     }
 
     /**
+     * Action for annotating page
+     * @param $id
+     * @return bool
+     * @throws NotFoundHttpException
+     */
+    public function actionAnnotate($id)
+    {
+        /** @var Pages $page */
+        $page = Pages::findOne($id);
+
+        if (!$page) throw new NotFoundHttpException('Wrong id = ' . $id);
+
+        $page->annotate();
+
+        return true;
+    }
+
+    /**
      * Maintenance action for pages module
      * @return string
      * @throws PagesException

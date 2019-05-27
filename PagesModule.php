@@ -45,7 +45,6 @@ class PagesModule extends AbstractConfigurableModule implements
             DIRECTORY_SEPARATOR .
             'yii2-yicms-pages');
 
-
         parent::init();
 
         $namespace = CommonModule::getInstance()->yicmsNamespace . '\Pages\Controllers\\';

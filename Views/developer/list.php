@@ -25,7 +25,7 @@ PageDevAsset::register($this);
                 </div>
             </div>
 
-            <?= $this->render('/pjax/update-pages-list-container', [
+            <?= $this->render('@yicms-pages/Views/pjax/update-pages-list-container', [
                 'pages' => $pages
             ]) ?>
 

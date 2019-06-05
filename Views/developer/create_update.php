@@ -254,7 +254,7 @@ $this->registerJs($js, $this::POS_READY);
 
     <?php if ($page->scenario == Pages::SCENARIO_CREATE): return; endif;?>
 
-    <?= $this->render('@yicms-common/views/pjax/update-fields-list-container', [
+    <?= $this->render('@yicms-common/Views/pjax/update-fields-list-container', [
         'fieldTemplateReference'     => $page->getFieldTemplateReference(),
         'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
         'fieldTemplatesSingle'       => $fieldTemplatesSingle
@@ -272,7 +272,8 @@ $this->registerJs($js, $this::POS_READY);
 
     <?= FilesDevModalWidget::widget([
         'devFilesGroup' => $devFilesGroup,
-        'action'        => Url::toRoute(['/pages/dev/update', 'id' => $page->id])
+        'action'        => Url::toRoute(['/pages/dev/update', 'id' => $page->id]),
+        'annotatePath'  => Url::toRoute(['/pages/dev/annotate', 'id' => $page->id]),
     ]) ?>
 
     <?= $this->render('@yicms-common/Views/pjax/update-images-list-container', [

@@ -68,7 +68,7 @@ class DeveloperController extends Controller
             'pages_order' => SORT_ASC
         ])->all();
 
-        return $this->render('/developer/list', [
+        return $this->render('@yicms-pages/Views/developer/list', [
             'pages' => $pages,
         ]);
     }
@@ -92,7 +92,7 @@ class DeveloperController extends Controller
             }
         }
 
-        return $this->render('/developer/create_update', [
+        return $this->render('@yicms-pages/Views/developer/create_update', [
             'page' => $page,
         ]);
     }
@@ -125,7 +125,7 @@ class DeveloperController extends Controller
                 $success = false;
             }
 
-            return $this->render('/developer/create_update', [
+            return $this->render('@yicms-pages/Views/developer/create_update', [
                 'page' => $page,
                 'success' => $success
             ]);
@@ -232,7 +232,7 @@ class DeveloperController extends Controller
 
         $page->annotate();
 
-        return $this->render('/developer/create_update', [
+        return $this->render('@yicms-pages/Views/developer/create_update', [
             'page'                       => $page,
             'devFieldGroup'              => $devFieldGroup,
             'fieldTemplatesTranslatable' => $fieldTemplatesTranslatable,
@@ -281,14 +281,14 @@ class DeveloperController extends Controller
                 $translateModel->save();
             }
 
-            return $this->render('/developer/page_translates', [
+            return $this->render('@yicms-pages/Views/developer/page_translates', [
                 'page'            => $page,
                 'translateModels' => $translateModels,
                 'success'         => true,
             ]);
         }
 
-        return $this->render('/developer/page_translates', [
+        return $this->render('@yicms-pages/Views/developer/page_translates', [
             'page'            => $page,
             'translateModels' => $translateModels,
         ]);
@@ -346,7 +346,7 @@ class DeveloperController extends Controller
             'pages_order' => SORT_ASC
         ])->all();
 
-        return $this->render('/pjax/update-pages-list-container', [
+        return $this->render('@yicms-pages/Views/pjax/update-pages-list-container', [
             'pages' => $pages
         ]);
     }
@@ -374,7 +374,7 @@ class DeveloperController extends Controller
             'pages_order' => SORT_ASC
         ])->all();
 
-        return $this->render('/pjax/update-pages-list-container', [
+        return $this->render('@yicms-pages/Views/pjax/update-pages-list-container', [
             'pages' => $pages
         ]);
     }
@@ -399,7 +399,7 @@ class DeveloperController extends Controller
             throw new PagesException('Can`t save data in database');
         }
 
-        return $this->render('/developer/maintenance', [
+        return $this->render('@yicms-pages/Views/developer/maintenance', [
             'config' => $config
         ]);
     }

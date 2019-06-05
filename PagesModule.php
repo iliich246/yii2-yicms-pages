@@ -39,12 +39,11 @@ class PagesModule extends AbstractConfigurableModule implements
      */
     public function init()
     {
-//        Yii::setAlias('@yicms-pages', Yii::getAlias('@vendor') .
-//            DIRECTORY_SEPARATOR .
-//            'iliich246' .
-//            DIRECTORY_SEPARATOR .
-//            'yii2-yicms-pages');
-
+        Yii::setAlias('@yicms-pages', Yii::getAlias('@vendor') .
+            DIRECTORY_SEPARATOR .
+            'iliich246' .
+            DIRECTORY_SEPARATOR .
+            'yii2-yicms-pages');
 
         parent::init();
 

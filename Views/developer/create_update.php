@@ -119,6 +119,9 @@ $this->registerJs($js, $this::POS_READY);
         <?php else: ?>
             <h1>Update Page</h1>
             <h2>IMPORTANT! Do not change page names in production without serious reason!</h2>
+            <?= Html::hiddenInput('globalAnnotateUrl', Url::toRoute(['/pages/dev/annotate', 'id' => $page->id]), [
+                'id' => 'global-annotate-url'
+            ]) ?>
         <?php endif; ?>
     </div>
 
@@ -273,7 +276,6 @@ $this->registerJs($js, $this::POS_READY);
     <?= FilesDevModalWidget::widget([
         'devFilesGroup' => $devFilesGroup,
         'action'        => Url::toRoute(['/pages/dev/update', 'id' => $page->id]),
-        'annotatePath'  => Url::toRoute(['/pages/dev/annotate', 'id' => $page->id]),
     ]) ?>
 
     <?= $this->render('@yicms-common/Views/pjax/update-images-list-container', [
@@ -283,7 +285,7 @@ $this->registerJs($js, $this::POS_READY);
 
     <?= ImagesDevModalWidget::widget([
         'devImagesGroup' => $devImagesGroup,
-        'action'         => Url::toRoute(['/pages/dev/update', 'id' => $page->id])
+        'action'         => Url::toRoute(['/pages/dev/update', 'id' => $page->id]),
     ]) ?>
 
     <?= $this->render('@yicms-common/Views/pjax/update-conditions-list-container', [
@@ -293,6 +295,6 @@ $this->registerJs($js, $this::POS_READY);
 
     <?= ConditionsDevModalWidget::widget([
         'devConditionsGroup' => $devConditionsGroup,
-        'action'             => Url::toRoute(['/pages/dev/update', 'id' => $page->id])
+        'action'             => Url::toRoute(['/pages/dev/update', 'id' => $page->id]),
     ]) ?>
 </div>
